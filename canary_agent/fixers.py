@@ -65,13 +65,13 @@ class Fixer:
         self.config = config
         self._client = None
 
-    def fix(self, rule_id: str, file_text: str) -> Optional[str]:
+    def fix(self, rule_id: str, file_text: str, feedback: str = None) -> Optional[str]:
         if self.config.mock:
             fn = _MOCK_FIXERS.get(rule_id)
             return fn(file_text) if fn else None
-        return self._model_fix(rule_id, file_text)
+        return self._model_fix(rule_id, file_text, feedback)
 
-    def _model_fix(self, rule_id: str, file_text: str) -> Optional[str]:
+    def _model_fix(self, rule_id: str, file_text: str, feedback: str = None) -> Optional[str]:
         from openai import OpenAI
 
         if self._client is None:
@@ -82,6 +82,12 @@ class Fixer:
             "while preserving behaviour. Output only the file content, no fences.\n\n"
             + file_text
         )
+        if feedback:
+            prompt += (
+                f"\n\nYour previous patch was rejected: {feedback}. The scanner "
+                "still flags the issue, so change your approach and produce a "
+                "different corrected file that fully removes it."
+            )
         resp = self._client.chat.completions.create(
             model=self.config.model,
             messages=[{"role": "user", "content": prompt}],
