@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "canary-agent"
+version = "0.1.0"
+description = "AI triage-and-fix agent over the canary LLM security scanner. Built for the Meta Global AI Developer Hackathon."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Jean-Cedrik Dorelas" }]
+keywords = ["llm", "security", "ai-agent", "triage", "meta-model-api", "muse-spark"]
+
+# Real model calls use the OpenAI SDK against the Meta Model API endpoint.
+# Mock mode and the eval harness need none of this (stdlib only).
+dependencies = ["openai>=1.40"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+canary-agent = "canary_agent.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["canary_agent*"]
+exclude = ["tests*", "eval*"]

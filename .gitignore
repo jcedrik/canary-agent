@@ -1,0 +1,15 @@
+# secrets never go in the repo
+.env
+*.key
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+
+# eval artifacts
+eval/out/
+*.out.json
