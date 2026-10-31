@@ -24,6 +24,7 @@ from canary_agent.context_agent import triage_with_lookups
 from canary_agent.fixers import Fixer
 from canary_agent.loop import fix_and_verify
 from canary_agent.model_client import ModelClient
+from canary_agent.owasp import agentic_label
 from canary_agent.rescan import scan
 from canary_agent.schema import Finding
 from canary_agent.triage import triage_finding
@@ -56,7 +57,7 @@ def main() -> int:
             verdict = triage_finding(finding, client)
         tag = verdict.label
         print(f"[{tag:>2}] {finding.rule_id:<16} {os.path.basename(finding.file)}:{finding.line}  "
-              f"<{verdict.exploitability}>")
+              f"<{verdict.exploitability}>  [{agentic_label(finding.rule_id)}]")
         print(f"     triage: {verdict.reason}")
 
         if verdict.decision != "true_positive":

@@ -107,15 +107,47 @@ Configuration is read from the environment, so no secret touches the code:
 | `CANARY_AGENT_MODEL` | `muse-spark-1.3` | model id |
 | `CANARY_AGENT_MOCK` | off | set `1` to force offline mock |
 
+## Tested on real-world projects
+
+Beyond the 10-repo benchmark, canary was run on fresh, popular LLM/agent
+projects. These are raw scanner findings that the triage agent then ranks, not
+confirmed vulnerabilities; the "injection candidates" column is PI-001/PI-002,
+the high-signal rules you gate on.
+
+| Project | Files | Findings | Injection candidates |
+|---|---:|---:|---:|
+| microsoft/autogen | 616 | 31 | 11 |
+| crewAIInc/crewAI | 982 | 35 | 10 |
+| langflow-ai/langflow | 4,400 | 30 | 7 |
+| assafelovic/gpt-researcher | 351 | 20 | 7 |
+| FlowiseAI/Flowise | 522 | 37 | 3 |
+| stanford-oval/storm | 53 | 7 | 2 |
+
+## Standards
+
+Every finding carries its OWASP LLM Top 10 (2025) category (from canary) and,
+where it maps cleanly, its OWASP Top 10 for Agentic Applications (2026) class:
+ASI-01 Agent Goal Hijack (prompt injection), ASI-02 Tool Misuse (a tool wired to
+a shell), ASI-03 Identity & Privilege Abuse (a leaked key).
+
 ## Status
 
-- [x] Triage: finding -> structured Muse Spark verdict
-- [x] Eval harness against 77 expert-labelled findings
-- [x] Offline mock mode + tests (no key needed)
+- [x] Triage with exploitability ranking, measured against 77 expert labels
 - [x] Fix-and-verify loop (patch -> canary re-scan -> accept only if cleared)
+- [x] Agentic context lookups across files when a snippet is ambiguous
 - [x] MCP server for Muse Code (scan-as-you-code)
-- [ ] Threat-model diagram via Muse Image (stretch)
-- [ ] Local mode on Muse Glimmer, code never leaves the machine (stretch)
+- [x] Muse Image attack-surface visualization
+- [x] Offline mock mode + tests (no key needed)
+
+## Roadmap
+
+- Cross-function / cross-file taint tracking (the agent fetches context today;
+  full dataflow is next)
+- MCP configuration auditing: unpinned servers, over-broad permissions, tool
+  shadowing - canary-agent is itself an MCP server
+- More rule families and languages
+- A larger, multi-reviewer evaluation set
+- Validation on real bug-bounty / disclosure targets
 
 ## License
 

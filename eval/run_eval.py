@@ -34,6 +34,7 @@ from canary_agent.config import Config
 from canary_agent.schema import Finding, Verdict
 from canary_agent.triage import triage_finding
 from canary_agent.model_client import ModelClient
+from canary_agent.owasp import agentic_label
 
 LABELS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "labels.csv")
 
@@ -152,6 +153,7 @@ def main() -> int:
             "rule_id": finding.rule_id, "file": finding.file, "line": finding.line,
             "gold": gold, "agent": pred, "decision": verdict.decision,
             "confidence": verdict.confidence, "exploitability": verdict.exploitability,
+            "owasp_agentic": agentic_label(finding.rule_id),
             "reason": verdict.reason, "mode": verdict.mode,
         })
 
