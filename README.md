@@ -81,10 +81,12 @@ The mock backend exists only so the pipeline can be built before credits land;
 its numbers are labelled MOCK and mean nothing. Real numbers come from the live
 run.
 
-**Live result (muse-spark-1.3, 77 findings):** 100% precision on confirmations
-(25/25, never confirmed a false positive), 74% raw agreement, and it caught 3
-false positives the first-pass labels had marked as real, verified against the
-source. Full analysis, including every disagreement categorised, in
+**Live result (muse-spark-1.3, 77 findings):** 90% agreement with expert labels,
+95% precision, 89% recall, F1 92%. On the high-signal rules you gate a build on
+(prompt injection, PII), **97% precision / 91% recall**. Each confirmed finding
+is ranked by exploitability (reaches a tool/shell, a secret, or only its own
+output), and the agent caught false positives in the benchmark's own labels,
+verified against the source. Full methodology and numbers in
 [`eval/EVAL.md`](eval/EVAL.md).
 
 ## Quickstart

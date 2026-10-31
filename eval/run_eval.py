@@ -24,7 +24,7 @@ import csv
 import json
 import os
 import sys
-from collections import defaultdict
+from collections import defaultdict, Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 
@@ -63,6 +63,26 @@ def row_to_finding(r: dict) -> Finding:
     )
 
 
+def _metrics(items):
+    """items: list of (gold, pred) with pred in {TP, FP, ?}. Treats the agent's
+    "true_positive" as the positive class: precision = of what it confirms,
+    how much is really a TP; recall = of real TPs, how many it confirmed."""
+    tp_conf = sum(1 for g, p in items if g == "TP" and p == "TP")
+    fp_conf = sum(1 for g, p in items if g == "FP" and p == "TP")
+    gold_tp = sum(1 for g, _ in items if g == "TP")
+    pred_tp = tp_conf + fp_conf
+    agree = sum(1 for g, p in items if g == p)
+    prec = tp_conf / pred_tp if pred_tp else None
+    rec = tp_conf / gold_tp if gold_tp else None
+    f1 = (2 * prec * rec / (prec + rec)) if (prec and rec) else None
+    return dict(n=len(items), agree=agree, tp_conf=tp_conf, fp_conf=fp_conf,
+                pred_tp=pred_tp, gold_tp=gold_tp, precision=prec, recall=rec, f1=f1)
+
+
+def _pct(x):
+    return f"{x:.0%}" if x is not None else "n/a"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Triage agent eval against expert labels.")
     ap.add_argument("--labels", default=LABELS)
@@ -93,13 +113,6 @@ def main() -> int:
     print(f"=== canary-agent triage eval | {banner} ===")
     print(f"findings: {len(rows)}\n")
 
-    # confusion counts: agent decision vs gold
-    agree = 0
-    per_rule = defaultdict(lambda: {"n": 0, "agree": 0})
-    kept_as_tp = 0          # agent said true_positive
-    kept_and_really_tp = 0  # ...and gold agrees
-    uncertain = 0
-    gold_tp = sum(1 for r in rows if r["label"] == "TP")
     n = len(rows)
 
     def work(r):
@@ -122,46 +135,60 @@ def main() -> int:
                   f"gold={r['label']} agent={verdict.label}")
 
     results = []
+    all_items, hi_items, gr_items = [], [], []
+    per_rule = defaultdict(list)
+    uncertain = 0
+    expl_counts = Counter()  # exploitability of findings the agent confirmed
     for r, finding, verdict in pairs:
-        gold = r["label"]
-        match = verdict.label == gold
-        agree += int(match)
-        per_rule[finding.rule_id]["n"] += 1
-        per_rule[finding.rule_id]["agree"] += int(match)
+        gold, pred = r["label"], verdict.label
+        all_items.append((gold, pred))
+        (gr_items if finding.rule_id == "CANARY-GR-001" else hi_items).append((gold, pred))
+        per_rule[finding.rule_id].append((gold, pred))
         if verdict.decision == "true_positive":
-            kept_as_tp += 1
-            kept_and_really_tp += int(gold == "TP")
+            expl_counts[verdict.exploitability] += 1
         elif verdict.decision == "uncertain":
             uncertain += 1
         results.append({
-            "rule_id": finding.rule_id,
-            "file": finding.file,
-            "line": finding.line,
-            "gold": gold,
-            "agent": verdict.label,
-            "decision": verdict.decision,
-            "confidence": verdict.confidence,
-            "reason": verdict.reason,
-            "mode": verdict.mode,
+            "rule_id": finding.rule_id, "file": finding.file, "line": finding.line,
+            "gold": gold, "agent": pred, "decision": verdict.decision,
+            "confidence": verdict.confidence, "exploitability": verdict.exploitability,
+            "reason": verdict.reason, "mode": verdict.mode,
         })
 
+    m = _metrics(all_items)
     print()
-    print(f"Agreement with expert labels: {agree}/{n} = {agree / n:.0%}")
-    print(f"Raw precision of the labelled set (share that are real): {gold_tp}/{n} = {gold_tp / n:.0%}")
-    if kept_as_tp:
-        print(
-            f"Precision if you keep only the agent's true_positives: "
-            f"{kept_and_really_tp}/{kept_as_tp} = {kept_and_really_tp / kept_as_tp:.0%}"
-        )
+    print(f"Overall ({n} findings)")
+    print(f"  agreement : {m['agree']}/{n} = {_pct(m['agree'] / n)}")
+    print(f"  precision : {m['tp_conf']}/{m['pred_tp']} = {_pct(m['precision'])}  (of what the agent confirms, how much is really a TP)")
+    print(f"  recall    : {m['tp_conf']}/{m['gold_tp']} = {_pct(m['recall'])}  (of real TPs, how many it confirmed)")
+    print(f"  F1        : {_pct(m['f1'])}")
+    print(f"  false confirmations (gold FP called TP): {m['fp_conf']}")
     if uncertain:
-        print(f"Agent abstained (uncertain) on {uncertain} findings")
-    print("\nPer rule:")
-    for rule, s in sorted(per_rule.items()):
-        print(f"  {rule:<16} {s['agree']}/{s['n']} = {s['agree'] / s['n']:.0%} agreement")
+        print(f"  abstained (uncertain): {uncertain}")
+
+    if hi_items and gr_items:
+        mh, mg = _metrics(hi_items), _metrics(gr_items)
+        print(f"\nHigh-signal rules only (excludes GR-001 advisory):")
+        print(f"  agreement {mh['agree']}/{mh['n']} = {_pct(mh['agree'] / mh['n'])}  |  "
+              f"precision {_pct(mh['precision'])}  |  recall {_pct(mh['recall'])}")
+        print(f"GR-001 advisory alone (canary rates this rule ~24% precision):")
+        print(f"  agreement {mg['agree']}/{mg['n']} = {_pct(mg['agree'] / mg['n'])}")
+
+    print("\nPer rule (agreement | precision | recall):")
+    for rule, items in sorted(per_rule.items()):
+        mr = _metrics(items)
+        print(f"  {rule:<16} {mr['agree']}/{mr['n']}={_pct(mr['agree'] / mr['n']):>4} | "
+              f"P {_pct(mr['precision']):>4} | R {_pct(mr['recall']):>4}")
+
+    if expl_counts:
+        print("\nConfirmed issues by exploitability (worst first):")
+        for k in Verdict.RISK_ORDER:
+            if expl_counts.get(k):
+                print(f"  {k:<24} {expl_counts[k]}")
 
     if args.out:
         with open(args.out, "w", encoding="utf-8") as fh:
-            json.dump({"mode": banner, "results": results}, fh, indent=2)
+            json.dump({"mode": banner, "metrics": m, "results": results}, fh, indent=2)
         print(f"\nWrote per-finding results to {args.out}")
     return 0
 

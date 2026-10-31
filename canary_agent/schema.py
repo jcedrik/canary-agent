@@ -46,7 +46,31 @@ class Verdict:
     confidence: float  # 0.0 - 1.0
     reason: str
     suggested_fix: Optional[str] = None
+    # where the untrusted data actually reaches, so findings can be ranked by
+    # real risk rather than just present/absent:
+    #   reaches_tool_or_shell  - a tool, shell, eval or file write the model drives
+    #   reaches_secret_or_exfil- secrets or data exfiltration
+    #   self_output_only       - only affects the caller's own output, no boundary crossed
+    #   not_applicable         - no untrusted data flow (e.g. a hardcoded key)
+    #   unknown                - not enough evidence
+    exploitability: str = "unknown"
     mode: str = "mock"  # which backend produced it: "mock" or a model id
+
+    # ordered worst-first, for ranking and reporting
+    RISK_ORDER = (
+        "reaches_secret_or_exfil",
+        "reaches_tool_or_shell",
+        "self_output_only",
+        "not_applicable",
+        "unknown",
+    )
+
+    @property
+    def risk_rank(self) -> int:
+        try:
+            return self.RISK_ORDER.index(self.exploitability)
+        except ValueError:
+            return len(self.RISK_ORDER)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

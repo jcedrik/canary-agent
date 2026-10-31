@@ -25,6 +25,9 @@ def triage_finding(finding: Finding, client: ModelClient, code_context: str = No
     decision = str(raw.get("decision", "uncertain")).strip().lower()
     if decision not in ("true_positive", "false_positive", "uncertain"):
         decision = "uncertain"
+    expl = str(raw.get("exploitability", "unknown")).strip().lower()
+    if expl not in Verdict.RISK_ORDER:
+        expl = "unknown"
     return Verdict(
         rule_id=finding.rule_id,
         file=finding.file,
@@ -33,6 +36,7 @@ def triage_finding(finding: Finding, client: ModelClient, code_context: str = No
         confidence=_coerce_confidence(raw.get("confidence")),
         reason=str(raw.get("reason", "")).strip(),
         suggested_fix=(raw.get("suggested_fix") or None),
+        exploitability=expl,
         mode=str(raw.get("mode", "mock")),
     )
 

@@ -19,6 +19,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from canary_agent.config import Config
+from canary_agent.context import code_window
+from canary_agent.context_agent import triage_with_lookups
 from canary_agent.fixers import Fixer
 from canary_agent.loop import fix_and_verify
 from canary_agent.model_client import ModelClient
@@ -28,9 +30,14 @@ from canary_agent.triage import triage_finding
 
 
 def main() -> int:
-    target = sys.argv[1] if len(sys.argv) > 1 else "examples/vulnerable_app"
+    args = [a for a in sys.argv[1:] if a != "--deep"]
+    deep = "--deep" in sys.argv
+    target = args[0] if args else "examples/vulnerable_app"
+    repo_root = target if os.path.isdir(target) else os.path.dirname(target) or "."
     config = Config.from_env()
     mode = "MOCK (offline, not real model output)" if config.mock else f"LIVE {config.model}"
+    if deep:
+        mode += " + deep (agent fetches context)"
     client = ModelClient(config)
     fixer = Fixer(config)
 
@@ -43,9 +50,13 @@ def main() -> int:
     confirmed = fixed = 0
     for f in findings:
         finding = Finding.from_canary(f)
-        verdict = triage_finding(finding, client)
+        if deep:
+            verdict = triage_with_lookups(finding, client, repo_root, code_window(f))
+        else:
+            verdict = triage_finding(finding, client)
         tag = verdict.label
-        print(f"[{tag:>2}] {finding.rule_id:<16} {os.path.basename(finding.file)}:{finding.line}")
+        print(f"[{tag:>2}] {finding.rule_id:<16} {os.path.basename(finding.file)}:{finding.line}  "
+              f"<{verdict.exploitability}>")
         print(f"     triage: {verdict.reason}")
 
         if verdict.decision != "true_positive":

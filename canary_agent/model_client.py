@@ -17,13 +17,37 @@ from .config import Config
 
 SYSTEM_PROMPT = (
     "You are a security triage analyst reviewing static-analysis findings for "
-    "LLM and AI-agent code. For each finding, decide whether it is a true "
-    "positive (a real security issue worth fixing) or a false positive (the "
-    "scanner matched something that is not actually a vulnerability). Judge "
-    "only from the evidence given. Respond with a single JSON object and "
+    "LLM and AI-agent code. Answer two INDEPENDENT questions.\n\n"
+    "1. decision - is the vulnerable data flow real?\n"
+    "   true_positive  = the pattern the rule describes genuinely holds here "
+    "(e.g. attacker-controllable input really is interpolated into the prompt, "
+    "or passed to the tool/sink). Judge this ONLY on whether the flow is real, "
+    "NOT on how damaging it is. A real finding whose blast radius is small is "
+    "STILL a true_positive.\n"
+    "   false_positive = the flow is not real: the value is a trusted constant, "
+    "the flagged line is a comment / docstring / type or field declaration, or "
+    "the scanner mismatched the line.\n"
+    "   Two kinds of rule, judged differently:\n"
+    "   - PRESENCE rules (prompt injection, excessive agency, leaked key, PII in "
+    "logs): true_positive when the bad flow is genuinely present.\n"
+    "   - ABSENCE-of-control rules (e.g. an LLM call with no visible output "
+    "guardrail): true_positive ONLY when the missing control plausibly matters "
+    "here - untrusted or sensitive data is actually in play. A routine SDK call "
+    "with trusted inputs and no dangerous downstream use is a false_positive, "
+    "since 'no guardrail' is true of almost every model call and is not by "
+    "itself a vulnerability.\n\n"
+    "2. exploitability - the blast radius, rated separately (this NEVER turns a "
+    "real finding into a false positive):\n"
+    "   reaches_tool_or_shell   - untrusted data reaches a tool, shell, eval/exec or file write the model can drive\n"
+    "   reaches_secret_or_exfil - secrets, credentials, or data exfiltration\n"
+    "   self_output_only        - only affects the caller's own output; no tool, secret or cross-user boundary is crossed\n"
+    "   not_applicable          - no untrusted data flow (e.g. a hardcoded key is exposure, not injection)\n\n"
+    "Judge only from the evidence given. Respond with a single JSON object and "
     "nothing else, shaped exactly like:\n"
     '{"decision": "true_positive" | "false_positive" | "uncertain", '
-    '"confidence": <float 0..1>, "reason": "<one or two sentences>", '
+    '"confidence": <float 0..1>, '
+    '"exploitability": "reaches_tool_or_shell" | "reaches_secret_or_exfil" | "self_output_only" | "not_applicable", '
+    '"reason": "<one or two sentences>", '
     '"suggested_fix": "<short fix, or null>"}'
 )
 
@@ -58,6 +82,7 @@ def _mock_verdict(finding: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "decision": "false_positive",
             "confidence": 0.55,
+            "exploitability": "not_applicable",
             "reason": "MOCK: low-precision advisory rule; no concrete sink shown in the snippet.",
             "suggested_fix": None,
         }
@@ -65,12 +90,23 @@ def _mock_verdict(finding: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "decision": "false_positive",
             "confidence": 0.5,
+            "exploitability": "not_applicable",
             "reason": "MOCK: generic api_key assignment; often a fixture or placeholder.",
             "suggested_fix": None,
         }
+    _expl = {
+        "CANARY-EA-001": "reaches_tool_or_shell",
+        "CANARY-EA-002": "reaches_tool_or_shell",
+        "CANARY-SEC-001": "reaches_secret_or_exfil",
+        "CANARY-SEC-002": "reaches_secret_or_exfil",
+        "CANARY-SEC-003": "reaches_secret_or_exfil",
+        "CANARY-SEC-004": "reaches_secret_or_exfil",
+        "CANARY-PII-001": "reaches_secret_or_exfil",
+    }.get(rule, "self_output_only")
     return {
         "decision": "true_positive",
         "confidence": 0.7,
+        "exploitability": _expl,
         "reason": "MOCK: high-signal rule; treated as a real issue pending model review.",
         "suggested_fix": "MOCK: review and apply the rule's documented remediation.",
     }
