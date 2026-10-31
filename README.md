@@ -3,6 +3,8 @@
 **An AI triage-and-fix agent for LLM application security.** Built for the
 Meta Global AI Developer Hackathon (Oct 27 - Nov 4, 2026), Indie track.
 
+![The AI/LLM attack surface canary-agent defends, generated with Meta's Muse Image](docs/threat_surface.png)
+
 AI agents now write a growing share of production code, and they introduce
 exactly the failure modes classic tools miss: prompt injection, excessive
 agency, leaked keys, unvalidated model output. `canary-agent` reads those
