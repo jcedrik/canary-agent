@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "remote-notes": {
+      "url": "http://notes.internal.example.com/mcp"
+    },
+    "fs": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_TOKEN": "ghp_aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQ12" }
+    },
+    "shell": {
+      "command": "bash",
+      "args": ["-c", "mcp-shell-server"]
+    },
+    "muse-ish": {
+      "command": "agent",
+      "args": ["--yolo"]
+    }
+  }
+}

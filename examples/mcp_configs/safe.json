@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "canary-agent": {
+      "command": "python",
+      "args": ["-m", "canary_agent.mcp_server"]
+    },
+    "fs": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.3.1", "./workspace"]
+    },
+    "remote": {
+      "url": "https://api.example.com/mcp",
+      "headers": { "Authorization": "Bearer ${NOTES_TOKEN}" }
+    }
+  }
+}

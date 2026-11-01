@@ -136,15 +136,23 @@ a shell), ASI-03 Identity & Privilege Abuse (a leaked key).
 - [x] Fix-and-verify loop (patch -> canary re-scan -> accept only if cleared)
 - [x] Agentic context lookups across files when a snippet is ambiguous
 - [x] MCP server for Muse Code (scan-as-you-code)
+- [x] MCP config audit: 7 checks (insecure transport, unpinned packages,
+  over-broad filesystem scope, secrets, raw shell, disabled approvals)
+- [x] Agentic detector for unbounded agent loops (ASI-08)
 - [x] Muse Image attack-surface visualization
 - [x] Offline mock mode + tests (no key needed)
+
+```bash
+python demo/audit_mcp.py ~/.config/muse/settings.json   # audit your MCP wiring
+```
 
 ## Roadmap
 
 - Cross-function / cross-file taint tracking (the agent fetches context today;
   full dataflow is next)
-- MCP configuration auditing: unpinned servers, over-broad permissions, tool
-  shadowing - canary-agent is itself an MCP server
+- Deeper MCP auditing: live read-only server inspection and baseline drift
+  ("rug-pull") detection
+- The remaining OWASP Agentic categories (memory poisoning, rogue agents)
 - More rule families and languages
 - A larger, multi-reviewer evaluation set
 - Validation on real bug-bounty / disclosure targets
