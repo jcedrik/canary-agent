@@ -1,0 +1,1197 @@
+{
+ "model": "muse-spark-1.3",
+ "n": 119,
+ "confirmed": 37,
+ "results": [
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+   "line": 561,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a hardcoded example task inside a docstring, not attacker-controllable input, so missing-guardrail does not matter here."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/packages/autogen-ext/src/autogen_ext/experimental/task_centric_memory/utils/apprentice.py",
+   "line": 170,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Flagged line only prepends a trusted random int to a hardcoded system prompt; no attacker-controllable input is interpolated there. User task is added separately at line 180."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+   "line": 555,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a docstring documentation example with hardcoded trusted task 'Name two cities in North America.' No untrusted or sensitive data is in play."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+   "line": 648,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line uses hardcoded trusted task 'What is the capital of France?' with only print output inside a docstring example; no untrusted data or tool use where missing output guardrail would matter."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+   "line": 270,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a docstring usage example with hardcoded trusted task string and only print(result); no untrusted input, tool use, or sensitive downstream handling makes missing output guardrail matter."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/packages/autogen-ext/src/autogen_ext/code_executors/jupyter/_jupyter_code_executor.py",
+   "line": 91,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Line 91 is inside a docstring usage example with a hardcoded trusted task string. No untrusted or sensitive data is in play, so an absent output guardrail does not plausibly matter."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+   "line": 609,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a hardcoded docstring example with trusted constant task and memory and only prints output; no untrusted/sensitive data or tool use makes missing output guardrail matter."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+   "line": 558,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a hardcoded trusted string in a docstring example with only print output; no untrusted or sensitive data or tool use is in play, so missing output guardrail does not matter."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_code_executor_agent.py",
+   "line": 634,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Dynamic code-execution output (execution_result.output) is interpolated into retry_prompt and fed back to the LLM as a UserMessage, creating a real indirect prompt-injection flow."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-002",
+   "file": "python/packages/autogen-studio/frontend/src/components/views/teambuilder/builder/component-editor/fields/workbench/mcp-prompts-tab.tsx",
+   "line": 97,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Flagged line only interpolates err.message into UI state via setLoadingError; no attacker input is interpolated into an LLM prompt and no tool/sink is reached."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-002",
+   "file": "python/packages/autogen-studio/frontend/src/components/views/teambuilder/builder/component-editor/fields/workbench/mcp-prompts-tab.tsx",
+   "line": 196,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Flagged line only interpolates err.message into local UI error state, not into an LLM prompt or tool call; no prompt-injection flow exists."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/packages/autogen-ext/src/autogen_ext/code_executors/docker_jupyter/_docker_jupyter.py",
+   "line": 118,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a hardcoded trusted string inside a docstring usage example, not untrusted input, so missing-output-guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/packages/autogen-studio/autogenstudio/eval/judges.py",
+   "line": 110,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Eval task and run result from function arguments are directly interpolated into the judge LLM prompt via f-string with no delimiting or sanitization, so evaluated content can steer judge instructions."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/packages/agbench/benchmarks/GAIA/Templates/ParallelAgents/scenario.py",
+   "line": 287,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "The flagged interpolation uses filename='__FILE_NAME__', a hardcoded trusted constant, not attacker-controllable input, so no prompt-injection flow is present."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai/src/crewai/flow/conversational_mixin.py",
+   "line": 1361,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "System prompt is built only from developer-supplied RouterConfig.prompt and route catalog; untrusted context dict is isolated as a separate user message via json.dumps, not interpolated into the prompt."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/packages/agbench/benchmarks/GAIA/Templates/SelectorGroupChat/scenario.py",
+   "line": 66,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Variable `filename` and `prompt` are directly interpolated into `task` which is fed to LLM agents including WebSurfer with web/file tools, so injected instructions can steer tool use."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/packages/agbench/benchmarks/GAIA/Templates/MagenticOne/scenario.py",
+   "line": 81,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Variable `filename` is directly interpolated into `filename_prompt` and then into `task` passed to `team.run_stream`, so untrusted content can shape the agent's instructions."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/samples/core_distributed-group-chat/_agents.py",
+   "line": 121,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Untrusted conversation history is directly interpolated into selector_prompt and sent as SystemMessage to the model, so prompt-injection flow is real; from shown code output only selects next role with no tool/secret use visible."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai/src/crewai/utilities/crew_chat.py",
+   "line": 526,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Variable `context` built from agent role/goal/backstory is directly interpolated into `prompt` and sent to `chat_llm.call`, so injected instructions in those fields can alter the generated description."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai/src/crewai/utilities/crew_chat.py",
+   "line": 468,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Dynamic `context` built from agent role/goal/backstory and `input_name` is interpolated into the prompt at line 472 and sent to `chat_llm.call`. No tool, shell, or secret handling is shown, only generation of a short description."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai/src/crewai/a2a/wrapper.py",
+   "line": 730,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "augmented_prompt directly interpolates task_description, history_text, and remote_status_notice \u2014 which include remote A2A agent output \u2014 into the LLM prompt that explicitly authorizes delegation to agents/tools, enabling indirect prompt injection."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/samples/gitty/src/gitty/_gitty.py",
+   "line": 127,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Untrusted GitHub issue content in `text` is directly interpolated into `updated_prompt` without delimiting or sanitization, and the surrounding workflow uses `_run(agent, task)` showing the model can drive tools."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-GR-001",
+   "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+   "line": 1283,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic Gemini provider wrapper that forwards caller-supplied contents to generate_content; no untrusted/sensitive data or dangerous downstream tool use is shown in scope, so missing output guardrail alone is not a vulnerability here."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-GR-001",
+   "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+   "line": 1326,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic provider wrapper calling generate_content_stream with no evidence of untrusted/sensitive input or dangerous downstream sink in the snippet, so a missing output guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai/src/crewai/utilities/prompts.py",
+   "line": 256,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Code genuinely interpolates variable inputs (system/prompt templates and self.agent.goal/role/backstory via replace) into the LLM prompt, matching prompt-injection pattern."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-GR-001",
+   "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+   "line": 1376,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic provider wrapper forwarding contents/config to generate_content with no evidence of untrusted/sensitive data or dangerous downstream tool/sink in the snippet; missing guardrail alone is not a vulnerability."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-GR-001",
+   "file": "lib/crewai/src/crewai/llms/providers/bedrock/completion.py",
+   "line": 1397,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic Bedrock provider wrapper forwarding caller messages to converse(); evidence shows no untrusted/sensitive input source and no unsafe downstream sink for the output, so missing guardrail alone is not a vulnerability."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-GR-001",
+   "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+   "line": 1419,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic provider wrapper forwarding `contents` to generate_content_stream with no evidence of untrusted/sensitive data or unsafe downstream use of the output in this snippet, so absence of guardrail alone is not a vulnerability."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-GR-001",
+   "file": "lib/crewai/src/crewai/llms/providers/anthropic/completion.py",
+   "line": 1145,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a generic Anthropic messages.create provider wrapper; context shows only internal params with no visible untrusted input or dangerous downstream sink, so missing output guardrail alone is not a vulnerability."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-GR-001",
+   "file": "lib/crewai/src/crewai/llms/providers/anthropic/completion.py",
+   "line": 1149,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic Anthropic provider wrapper calling messages.create(**params). The snippet shows no untrusted/sensitive input and no dangerous downstream sink, so a missing output guardrail alone is not a vulnerability."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai/src/crewai/memory/recall_flow.py",
+   "line": 313,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "User-controlled query and retrieved memory chunk_text are directly interpolated into the LLM prompt with no delimiting or sanitization, so injected instructions can steer the model."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai/src/crewai/llms/providers/openai/completion.py",
+   "line": 1039,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Code only concatenates messages with role=='system' into the Responses API instructions field as normal provider translation; no attacker-controllable input is shown flowing into the prompt."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai-tools/src/crewai_tools/aws/bedrock/agents/invoke_agent_tool.py",
+   "line": 111,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "User-controlled `query` is directly interpolated into `prompt` at line 111-116 and passed as `inputText` to Bedrock `invoke_agent`, which can drive tools."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-GR-001",
+   "file": "lib/crewai/src/crewai/llms/providers/bedrock/completion.py",
+   "line": 781,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic Bedrock converse wrapper with only message-shape validation and token tracking. No untrusted source for messages or dangerous downstream use of the LLM output is shown, so missing output guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/crewai/src/crewai/utilities/prompts.py",
+   "line": 254,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Flagged line 254 only concatenates internal I18N/system template strings with no attacker-controlled value; nearby agent goal/role/backstory interpolation is intended trusted developer config, not untrusted input flow."
+  },
+  {
+   "repo": "crewAIInc/crewAI",
+   "rule_id": "CANARY-PI-001",
+   "file": "lib/cli/src/crewai_cli/tui_picker.py",
+   "line": 128,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Variable named search_prompt is a TUI status line rendered via sys.stdout.write, not an LLM prompt; no model call or untrusted-to-LLM flow exists, scanner matched on name."
+  },
+  {
+   "repo": "stanford-oval/storm",
+   "rule_id": "CANARY-GR-001",
+   "file": "knowledge_storm/lm.py",
+   "line": 521,
+   "decision": "false_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "Generic LM wrapper passes prompt to completions API and returns response with no evidence of untrusted input, sensitive data, or downstream tool/shell use; missing guardrail alone is not an LLM05 vulnerability."
+  },
+  {
+   "repo": "stanford-oval/storm",
+   "rule_id": "CANARY-PI-001",
+   "file": "knowledge_storm/utils.py",
+   "line": 777,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Untrusted user_input is directly interpolated via f-string into the moderation prompt at line 784, so attacker instructions can alter the judge verdict."
+  },
+  {
+   "repo": "stanford-oval/storm",
+   "rule_id": "CANARY-PI-001",
+   "file": "knowledge_storm/utils.py",
+   "line": 728,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Attacker-controlled user_input is directly interpolated into the LLM prompt at line 734. Length and regex checks do not prevent instruction override."
+  },
+  {
+   "repo": "stanford-oval/storm",
+   "rule_id": "CANARY-GR-001",
+   "file": "knowledge_storm/lm.py",
+   "line": 517,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic basic_request wrapper passes prompt to chat.completions.create with no output guardrail shown, but snippet shows no untrusted source or dangerous downstream sink for LLM output."
+  },
+  {
+   "repo": "microsoft/autogen",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/samples/agentchat_chess_game/main.py",
+   "line": 44,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Opponent-influenced value last_move from board.peek().uci() is directly interpolated into the LLM prompt on line 44, so the attacker-controllable-to-prompt flow is real albeit constrained to UCI format."
+  },
+  {
+   "repo": "stanford-oval/storm",
+   "rule_id": "CANARY-GR-001",
+   "file": "knowledge_storm/lm.py",
+   "line": 776,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic LM wrapper passing a caller-supplied prompt to messages.create with no evidence of untrusted/sensitive input or dangerous downstream use of the output; absence of a guardrail alone is not a vulnerability."
+  },
+  {
+   "repo": "stanford-oval/storm",
+   "rule_id": "CANARY-GR-001",
+   "file": "knowledge_storm/lm.py",
+   "line": 1241,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic LM wrapper that forwards caller-supplied prompt to generate_content with no evidence of untrusted/sensitive data or dangerous downstream sink; missing guardrail alone does not plausibly matter here."
+  },
+  {
+   "repo": "deepset-ai/haystack",
+   "rule_id": "CANARY-PI-002",
+   "file": "docs-website/src/components/CopyDropdown/index.tsx",
+   "line": 31,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Lines only build opt-in share URLs for external assistants using encodeURIComponent(prompt); there is no LLM prompt construction, system instruction, or model/tool sink showing attacker input overriding instructions."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-SEC-005",
+   "file": "config/vault.example.yaml",
+   "line": 20,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Flagged value is placeholder 'YOUR_ACCESS_TOKEN' in vault.example.yaml template, not a real credential or disclosure."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-SEC-005",
+   "file": "config/vault.example.yaml",
+   "line": 25,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Flagged value is placeholder \"YOUR_ACCESS_TOKEN\" in vault.example.yaml, not a real credential or secret disclosure."
+  },
+  {
+   "repo": "deepset-ai/haystack",
+   "rule_id": "CANARY-PI-002",
+   "file": "docs-website/src/components/CopyDropdown/index.tsx",
+   "line": 33,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "No LLM prompt execution or tool sink here, just client-side URL builder that safely URL-encodes prompt for external AI links; scanner mismatched benign share-link code as prompt injection."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "metagpt/provider/ark_api.py",
+   "line": 75,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic provider wrapper calling chat.completions.create with caller-supplied messages; no untrusted/sensitive data or downstream tool/sink use is in evidence, so missing output guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "metagpt/provider/ark_api.py",
+   "line": 97,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic provider wrapper forwards messages to chat.completions.create with no evidence of untrusted/sensitive data or downstream tool use; missing guardrail alone is not a vulnerability."
+  },
+  {
+   "repo": "stanford-oval/storm",
+   "rule_id": "CANARY-GR-001",
+   "file": "knowledge_storm/lm.py",
+   "line": 874,
+   "decision": "false_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "This is a generic LM wrapper that forwards `prompt` to chat.completions and returns it; no untrusted/sensitive source or downstream tool/shell sink is in evidence, so missing output guardrail does not plausibly matter."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "metagpt/provider/anthropic_api.py",
+   "line": 53,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic Anthropic provider wrapper forwards caller-supplied messages to the API; no untrusted/sensitive data or dangerous downstream sink is visible at this line, so missing output guardrail alone is not a vulnerability."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "metagpt/provider/google_gemini_api.py",
+   "line": 123,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic provider wrapper calling generate_content with no evidence of untrusted/sensitive data or dangerous downstream sink. Absence of output guardrail alone is true of almost every SDK call and does not plausibly matter here."
+  },
+  {
+   "repo": "deepset-ai/haystack",
+   "rule_id": "CANARY-PI-002",
+   "file": "docs-website/src/components/CopyDropdown/index.tsx",
+   "line": 32,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Flagged line only builds a user-initiated external hyperlink with encodeURIComponent, not a backend LLM prompt call; no attacker-controllable flow into an LLM is shown."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "metagpt/provider/zhipuai_api.py",
+   "line": 58,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic provider wrapper forwards caller messages to chat.completions.create with no evidence of untrusted/sensitive data or downstream tool use; missing output guardrail alone is not a vulnerability per absence-of-control criteria."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "metagpt/provider/google_gemini_api.py",
+   "line": 131,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic Gemini provider wrapper that forwards messages to generate_content_async and returns response; no untrusted/sensitive data or tool/sink use is shown, so missing output guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "metagpt/provider/anthropic_api.py",
+   "line": 61,
+   "decision": "false_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "Generic Anthropic provider wrapper forwards caller-supplied messages to the API; no untrusted/sensitive data or tool/shell downstream use is shown, so missing output guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-PI-001",
+   "file": "metagpt/actions/import_repo.py",
+   "line": 205,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Untrusted repo-controlled file names (entries) and README text (r.object_) are concatenated directly into prompt at line 205 and passed to llm.aask."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-SEC-005",
+   "file": "metagpt/configs/compress_msg_config.py",
+   "line": 16,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Flagged line is a static Enum member with a hardcoded string literal; no attacker-controllable input, prompt, tool, or secret flow is present."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "examples/di/InfiAgent-DABench/run_InfiAgent-DABench.py",
+   "line": 25,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Routine agent.run(requirement) in benchmark harness with output only parsed and returned; no evidence of attacker-controlled/sensitive data or dangerous downstream tool/shell/secret sink where missing output guardrail would matter."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-SEC-005",
+   "file": "metagpt/configs/compress_msg_config.py",
+   "line": 18,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Flagged line is a trusted enum constant definition for message compression with no sensitive, secret, or attacker-controllable data and no disclosure flow."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-PI-001",
+   "file": "metagpt/actions/di/ask_review.py",
+   "line": 46,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Prompt interpolates only trusted internal values (trigger, cause_by type name, ReviewConst constants) and is passed to get_human_input for human display, not to an LLM. No attacker-controllable data reaches an LLM prompt sink."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-PI-001",
+   "file": "metagpt/memory/brain_memory.py",
+   "line": 235,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Parameters `sentence` and `context` are directly interpolated into the LLM prompt at line 235 with no sanitization or trust boundary, which is genuine prompt-injection flow."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-PI-001",
+   "file": "metagpt/actions/write_code_review.py",
+   "line": 160,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Prior LLM output cr_rsp and variable context_prompt are directly interpolated into rewrite_prompt at line 160 and sent to _aask, with the resulting model output written to doc.content file."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-PI-001",
+   "file": "metagpt/ext/aflow/scripts/operator.py",
+   "line": 67,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Untrusted parameters `input` and `instruction` are directly concatenated into `prompt` and passed to the LLM via `_fill_node` with no sanitization or role separation."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-PI-001",
+   "file": "metagpt/ext/werewolf/roles/human_player.py",
+   "line": 13,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "The interpolated string is passed to Python's builtin input() to prompt the local human player, not to an LLM. No attacker-controlled data reaches a model prompt, so LLM01 does not apply."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-PI-001",
+   "file": "examples/di/email_summary.py",
+   "line": 21,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Prompt instructs code-executing DataInterpreter agent to fetch and ingest untrusted external email bodies, creating real indirect prompt-injection surface where attacker email content enters privileged agent context."
+  },
+  {
+   "repo": "geekan/MetaGPT",
+   "rule_id": "CANARY-PI-001",
+   "file": "metagpt/ext/stanford_town/actions/st_action.py",
+   "line": 83,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Method parameter `prompt` (plus special_instruction/example_output) is directly concatenated into the LLM prompt string passed to `self._aask`, so attacker-influenced content can alter model instructions."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-GR-001",
+   "file": "libs/langchain-mcp-adapters/examples/filesystem_langgraph_example.ts",
+   "line": 130,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "-",
+   "reason": "model.invoke uses user-influenced state.messages and returns response directly into a LangGraph with a tools node and no visible output validation, and filesystem context implies sensitive tool use."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-GR-001",
+   "file": "libs/langchain-mcp-adapters/examples/firecrawl_multiple_servers_example.ts",
+   "line": 103,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Queries are hardcoded trusted constants in an examples/ script and the agent output is only console.logged; no untrusted/sensitive data or dangerous downstream sink makes a missing output guardrail material here."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-SEC-005",
+   "file": "libs/providers/langchain-together-ai/src/llms.ts",
+   "line": 159,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "The flagged string \"TOGETHER_AI_API_KEY\" is an environment-variable name in LangChain's lc_secrets mapping, not a hardcoded secret value."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-GR-001",
+   "file": "libs/langchain-mcp-adapters/examples/langgraph_example.ts",
+   "line": 102,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "-",
+   "reason": "model.invoke(state.messages) processes chat/tool history with no output validation, and the response is returned to a graph that includes a tools node, so improper output handling plausibly matters."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-GR-001",
+   "file": "libs/langchain-mcp-adapters/examples/calculator_sse_shttp_example.ts",
+   "line": 109,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "-",
+   "reason": "model.invoke consumes user-controlled state.messages and its response flows into a LangGraph workflow with a tools node, with no output guardrail/validation visible at the call site."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-SEC-005",
+   "file": "libs/providers/langchain-together-ai/src/chat_models.ts",
+   "line": 84,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "The flagged strings are environment variable names in LangChain's lc_secrets mapping, not hardcoded secret values. This is the intended secure pattern for secret handling."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-SEC-005",
+   "file": "libs/providers/langchain-together-ai/src/chat_models.ts",
+   "line": 85,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "The flagged string 'TOGETHER_AI_API_KEY' is an environment-variable name in lc_secrets mapping, not a hardcoded secret value. This is LangChain's standard secret-redaction declaration, not disclosure."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-SEC-005",
+   "file": "libs/providers/langchain-together-ai/src/embeddings.ts",
+   "line": 76,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "The flagged string \"TOGETHER_AI_API_KEY\" is an environment-variable name in the standard lc_secrets mapping, not a hardcoded secret value. No credential is disclosed."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-SEC-005",
+   "file": "libs/providers/langchain-together-ai/src/llms.ts",
+   "line": 165,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Flagged line is only an lc_aliases mapping to env var name, not a secret value; no sensitive disclosure or untrusted flow is present."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-GR-001",
+   "file": "libs/langchain-mcp-adapters/examples/firecrawl_custom_config_example.ts",
+   "line": 79,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "The agent input is a hardcoded trusted constant with no user or external data, and the result is only console.logged. With no untrusted/sensitive data or dangerous downstream sink, the missing output guardrail does not plausibly matter."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-SEC-005",
+   "file": "libs/providers/langchain-together-ai/src/chat_models.ts",
+   "line": 91,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Line 91 is a LangChain lc_aliases mapping of field names to alias strings, not a hardcoded credential or disclosure. The real secret is correctly loaded via getEnvironmentVariable and lc_secrets."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-PI-002",
+   "file": "libs/langchain-classic/src/retrievers/hyde.ts",
+   "line": 90,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Flagged line builds a validation Error message using template metadata, not an LLM prompt. No attacker-controllable query is interpolated into model input here."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-GR-001",
+   "file": "libs/providers/langchain-perplexity/src/chat_models.ts",
+   "line": 694,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic provider wrapper forwarding caller-supplied messagesList to chat.completions.create with no evidence of untrusted/sensitive data or downstream tool/sink, so missing output guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "chainlit/chainlit",
+   "rule_id": "CANARY-PI-002",
+   "file": "cypress/e2e/chat_prefill/spec.cy.ts",
+   "line": 20,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "The `prompt` value is a hardcoded test constant, not attacker-controllable input, and the flagged line is Cypress test setup (cy.visit) not production code passing input to an LLM."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-GR-001",
+   "file": "libs/providers/langchain-perplexity/src/chat_models.ts",
+   "line": 748,
+   "decision": "false_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "This is a generic provider wrapper forwarding messagesList to chat.completions.create and streaming chunks back to caller. No dangerous downstream sink, tool use, or sensitive data handling is visible, so missing output guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-PI-002",
+   "file": "libs/langchain-classic/src/chains/sql_db/sql_db_chain.ts",
+   "line": 303,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Flagged line constructs an Error message about invalid prompt variables, not an LLM prompt; no attacker-controlled input is interpolated into a model prompt here."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-GR-001",
+   "file": "libs/providers/langchain-perplexity/src/chat_models.ts",
+   "line": 688,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a generic provider pass-through to Perplexity API with no evidence of untrusted input or dangerous downstream sink; absence of guardrail alone on a routine SDK call is not a vulnerability."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/semantic_kernel/agents/open_ai/assistant_thread_actions.py",
+   "line": 125,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Line 125 is a routine threads.messages.create persistence call, not an LLM output boundary; no untrusted output, tool use, or sensitive rendering is shown requiring an output guardrail."
+  },
+  {
+   "repo": "langchain-ai/langchainjs",
+   "rule_id": "CANARY-PI-002",
+   "file": "libs/langchain-classic/src/experimental/autogpt/prompt.ts",
+   "line": 71,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Externally supplied this.aiName, this.aiRole and goals[] are directly interpolated into the AutoGPT system prompt with no sanitization, creating a real prompt-injection flow into a tool-using agent."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/semantic_kernel/agents/open_ai/assistant_content_generation.py",
+   "line": 79,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line only persists a message via threads.messages.create, it does not generate LLM output. No model output requiring guardrail/validation is in play, so absence-of-control does not plausibly matter here."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-GR-001",
+   "file": "dotnet/samples/Demos/QualityCheck/python-server/app/main.py",
+   "line": 40,
+   "decision": "false_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "Flagged line is a deterministic COMET quality-estimation scorer returning numeric scores to the same caller, not a generative LLM output, with no tool, shell, secret or downstream sink where output handling would matter."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/semantic_kernel/agents/channels/bedrock_agent_channel.py",
+   "line": 69,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "Untrusted chat history (self.messages[-1].content and sessionState from history) is passed to Bedrock agent.invoke with no visible output guardrail/validation, and response.message is directly appended and yielded user-facing."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-SEC-005",
+   "file": "python/semantic_kernel/connectors/memory_stores/azure_cognitive_search/utils.py",
+   "line": 39,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Line 39 only assigns the environment variable name string, not a secret value; no sensitive disclosure flow is present."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/semantic_kernel/connectors/openapi_plugin/openapi_runner.py",
+   "line": 278,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Logged 'address' is a server-side validated connection target for fallback, not user PII; no personal data flow to logs is evidenced."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/samples/demos/guided_conversations/guided_conversation/utils/resources.py",
+   "line": 208,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Interpolated values are internal integer counters (remaining/elapsed units) formatted via format_resource, not attacker-controllable strings, so no prompt-injection flow exists."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/samples/demos/guided_conversations/guided_conversation/utils/resources.py",
+   "line": 203,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "The f-string interpolates only internally computed turn counts (formatted_elapsed_resource from elapsed_units) and pluralization logic, not attacker-controllable text, so no prompt-injection flow exists."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/semantic_kernel/agents/azure_ai/agent_thread_actions.py",
+   "line": 864,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged line only persists a chat message via messages.create, it does not generate LLM output; no untrusted output handling or missing guardrail sink is shown."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/getting_started_with_agents/openai_responses/step7_responses_agent_structured_outputs.py",
+   "line": 55,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "Line 55 directly interpolates raw user-controlled `user_input` into print/log output, so the user-data-to-log flow the rule describes is genuinely present."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/concepts/agents/openai_assistant/openai_assistant_message_callback.py",
+   "line": 91,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "The flagged print logs hardcoded sample strings like 'Hello' and 'What is the special soup?' defined locally, with no PII, credentials, or untrusted user data present."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/concepts/agents/openai_responses/responses_agent_message_callback.py",
+   "line": 79,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "The printed user_input comes from a hardcoded sample list with no PII or identifiers, so no untrusted PII flows to logs."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/concepts/agents/openai_assistant/openai_assistant_message_callback_streaming.py",
+   "line": 91,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged print logs only hardcoded sample strings from user_inputs with no PII, SSN, email, or other sensitive data; no real user PII flow to logs exists."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/semantic_kernel/agents/open_ai/responses_agent_thread_actions.py",
+   "line": 609,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "-",
+   "reason": "The responses.create call consumes ChatHistory user content and passes tools=tools to the model with no visible output validation; the only handling is BadRequestError content_filter, which is not an app-side output guardrail before tool use."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/semantic_kernel/connectors/ai/google/google_ai/services/google_ai_text_completion.py",
+   "line": 128,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is a generic SDK wrapper that forwards caller-supplied prompt to Gemini generate_content and returns TextContent, with no evidence of untrusted/sensitive data or dangerous downstream use. Missing output guardrail at this connector layer alone does not plausibly matter per absence-of-control criteria."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/concepts/agents/openai_assistant/openai_assistant_streaming.py",
+   "line": 69,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "The flagged print logs only hardcoded sample strings like 'Hello' with no PII or user-controlled data, so no PII-in-logs flow is present."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/concepts/agents/openai_responses/responses_agent_message_callback_streaming.py",
+   "line": 79,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "The logged user_input comes from a hardcoded demo list with no PII, not real user data, so no PII flow to logs is present."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PI-001",
+   "file": "python/samples/concepts/processes/plan_and_execute.py",
+   "line": 97,
+   "decision": "true_positive",
+   "exploitability": "reaches_tool_or_shell",
+   "owasp_agentic": "ASI-01 Agent Goal Hijack",
+   "reason": "Function parameter user_request is directly interpolated into prompt on line 98 and passed to run_openai_agent whose instructions explicitly allow tool use."
+  },
+  {
+   "repo": "openai/swarm",
+   "rule_id": "CANARY-GR-001",
+   "file": "examples/customer_service_streaming/src/utils.py",
+   "line": 35,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Line 35 is a routine chat-completions call with no evidence of untrusted/sensitive input in request_params and no dangerous downstream use, only returning the message. For an absence-of-guardrail rule this alone does not establish a vulnerability."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/getting_started_with_agents/openai_responses/step6_responses_agent_vision.py",
+   "line": 72,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Flagged print only echoes sample chat prompts like 'Describe this image' to stdout; no PII identifiers, credentials, or sensitive user data is shown flowing to logs."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/concepts/audio/01-chat_with_audio_input.py",
+   "line": 57,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "User-controlled transcribed speech from audio (user_input.text) is directly printed to stdout at line 57, so potential PII reaches a log/console sink."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/concepts/agents/mixed_chat/mixed_chat_reset.py",
+   "line": 101,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "The user-controlled variable user_input flows directly into print() on line 101, so chat content reaches console/log output."
+  },
+  {
+   "repo": "openai/swarm",
+   "rule_id": "CANARY-GR-001",
+   "file": "examples/customer_service_streaming/src/utils.py",
+   "line": 23,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic chat.completions wrapper with parameterized messages/tools; no untrusted or sensitive data flow shown in scope, so absence of output guardrail alone does not plausibly matter here."
+  },
+  {
+   "repo": "openai/swarm",
+   "rule_id": "CANARY-GR-001",
+   "file": "examples/customer_service_streaming/src/swarm/engines/assistants_engine.py",
+   "line": 141,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "User-controlled `request` is passed directly into `threads.messages.create` and executed via `runs.create` with no visible output validation or guardrail in the snippet."
+  },
+  {
+   "repo": "reworkd/AgentGPT",
+   "rule_id": "CANARY-SEC-005",
+   "file": "docker-compose.yml",
+   "line": 51,
+   "decision": "true_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Line 51 hardcodes MYSQL_ROOT_PASSWORD to 'reworkd_platform' in plaintext in docker-compose.yml, which is genuine secret exposure."
+  },
+  {
+   "repo": "openai/swarm",
+   "rule_id": "CANARY-GR-001",
+   "file": "examples/customer_service_streaming/src/evals/eval_function.py",
+   "line": 45,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "This is an absence-of-guardrail flag on a routine eval-only chat.completions call with fixed system prompt; input is internal eval state self.plan['step'][-1] with no tool, shell, or exfil downstream, only print, so missing control does not plausibly matter."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-PII-001",
+   "file": "python/samples/concepts/audio/03-chat_with_audio_input_output.py",
+   "line": 65,
+   "decision": "false_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "Line 65 only echoes the current user's own transcribed utterance to local stdout in an interactive sample; no PII identifiers, persistent logging, or cross-user disclosure is shown."
+  },
+  {
+   "repo": "reworkd/AgentGPT",
+   "rule_id": "CANARY-SEC-005",
+   "file": "docker-compose.yml",
+   "line": 50,
+   "decision": "true_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "docker-compose.yml lines 50-51 hardcode MYSQL_PASSWORD and MYSQL_ROOT_PASSWORD to 'reworkd_platform', which is genuine plaintext credential exposure."
+  },
+  {
+   "repo": "microsoft/semantic-kernel",
+   "rule_id": "CANARY-GR-001",
+   "file": "python/semantic_kernel/agents/channels/chat_history_channel.py",
+   "line": 65,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic framework plumbing forwards internal chat history to agent.invoke with no evidence of untrusted input or dangerous downstream sink, so missing output guardrail does not plausibly matter here."
+  },
+  {
+   "repo": "reworkd/AgentGPT",
+   "rule_id": "CANARY-SEC-005",
+   "file": "cli/src/envGenerator.js",
+   "line": 59,
+   "decision": "true_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Line 59 hardcodes REWORKD_PLATFORM_DATABASE_PASSWORD to \"reworkd_platform\" (repeated for frontend), so the hardcoded-credential pattern genuinely holds."
+  },
+  {
+   "repo": "reworkd/AgentGPT",
+   "rule_id": "CANARY-SEC-005",
+   "file": "cli/src/envGenerator.js",
+   "line": 68,
+   "decision": "true_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "ASI-03 Identity & Privilege Abuse",
+   "reason": "Line 68 hardcodes DATABASE_PASSWORD to 'reworkd_platform' alongside other default DB credentials, so the hardcoded-secret pattern genuinely holds."
+  },
+  {
+   "repo": "openai/swarm",
+   "rule_id": "CANARY-GR-001",
+   "file": "swarm/core.py",
+   "line": 69,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic chat.completions wrapper with no evidence of untrusted or sensitive data in messages and no shown unsafe use of model output; absence-of-guardrail alone is true of almost every model call."
+  },
+  {
+   "repo": "reworkd/AgentGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "platform/reworkd_platform/services/anthropic.py",
+   "line": 35,
+   "decision": "false_positive",
+   "exploitability": "not_applicable",
+   "owasp_agentic": "-",
+   "reason": "Generic LLM wrapper forwarding AbstractPrompt to Anthropic and returning stripped text; snippet shows no untrusted input, sensitive data, or tool/shell/file sink where missing output guardrail would matter."
+  },
+  {
+   "repo": "reworkd/AgentGPT",
+   "rule_id": "CANARY-GR-001",
+   "file": "next/src/server/api/routers/agentRouter.ts",
+   "line": 30,
+   "decision": "true_positive",
+   "exploitability": "self_output_only",
+   "owasp_agentic": "-",
+   "reason": "User-controlled `goal` is passed directly as LLM prompt content with no visible output validation, so the missing-output-guardrail pattern genuinely holds, though output is only used as an agent name."
+  }
+ ]
+}

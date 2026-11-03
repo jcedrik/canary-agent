@@ -109,19 +109,22 @@ Configuration is read from the environment, so no secret touches the code:
 
 ## Tested on real-world projects
 
-Beyond the 10-repo benchmark, canary was run on fresh, popular LLM/agent
-projects. These are raw scanner findings that the triage agent then ranks, not
-confirmed vulnerabilities; the "injection candidates" column is PI-001/PI-002,
-the high-signal rules you gate on.
+canary-agent was run end to end on **10 popular open-source LLM/agent projects**
+(microsoft/autogen, crewAI, MetaGPT, LangChain.js, Microsoft Semantic Kernel,
+storm, Haystack, OpenAI swarm, AgentGPT, Chainlit). The triage agent took **119
+raw scanner findings down to 37 confirmed**, **14 of which reach a tool or a
+shell**, and rejected 82 as false positives (69%). Full per-project results and
+the highest-risk findings are in [`eval/WILD.md`](eval/WILD.md).
 
-| Project | Files | Findings | Injection candidates |
-|---|---:|---:|---:|
-| microsoft/autogen | 616 | 31 | 11 |
-| crewAIInc/crewAI | 982 | 35 | 10 |
-| langflow-ai/langflow | 4,400 | 30 | 7 |
-| assafelovic/gpt-researcher | 351 | 20 | 7 |
-| FlowiseAI/Flowise | 522 | 37 | 3 |
-| stanford-oval/storm | 53 | 7 | 2 |
+| | count |
+|---|---:|
+| Raw findings triaged | 119 |
+| Confirmed by the agent | 37 |
+| ...reaching a tool or shell | 14 |
+| False positives filtered out | 82 |
+
+These are candidate findings the agent triaged, not confirmed or disclosed
+vulnerabilities - a benchmark of the triage, not a security advisory.
 
 ## Standards
 

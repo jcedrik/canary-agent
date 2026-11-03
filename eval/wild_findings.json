@@ -1,0 +1,1192 @@
+[
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_code_executor_agent.py",
+  "line": 634,
+  "snippet": "retry_prompt = (",
+  "owasp": "LLM01",
+  "code_context": "     622| \n     623|             # Step 10: Yield a CodeExecutionEvent\n     624|             yield CodeExecutionEvent(retry_attempt=nth_try, result=execution_result, source=self.name)\n     625| \n     626|             # If execution was successful or last retry, then exit\n     627|             if execution_result.exit_code == 0 or nth_try == max_retries_on_error:\n     628|                 break\n     629| \n     630|             # Step 11: If exit code is non-zero and retries are available then\n     631|             #          make an inference asking if we should retry or not\n     632|             chat_context = await model_context.get_messages()\n     633| \n>>   634|             retry_prompt = (\n     635|                 f\"The most recent code execution resulted in an error:\\n{execution_result.output}\\n\\n\"\n     636|                 \"Should we attempt to resolve it? Please respond with:\\n\"\n     637|                 \"- A boolean value for 'retry' indicating whether it should be retried.\\n\"\n     638|                 \"- A detailed explanation in 'reason' that identifies the issue, justifies your decision to retry or not, and outlines how you would resolve the error if a retry is attempted.\"\n     639|             )\n     640| \n     641|             chat_context = chat_context + [\n     642|                 UserMessage(\n     643|                     content=retry_prompt,\n     644|                     source=agent_name,\n     645|                 )\n     646|             ]"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+  "line": 270,
+  "snippet": "result = await agent.run(task=\"Name two cities in North America.\")",
+  "owasp": "LLM05",
+  "code_context": "     258|             import asyncio\n     259|             from autogen_ext.models.openai import OpenAIChatCompletionClient\n     260|             from autogen_agentchat.agents import AssistantAgent\n     261| \n     262| \n     263|             async def main() -> None:\n     264|                 model_client = OpenAIChatCompletionClient(\n     265|                     model=\"gpt-4o\",\n     266|                     # api_key = \"your_openai_api_key\"\n     267|                 )\n     268|                 agent = AssistantAgent(name=\"assistant\", model_client=model_client)\n     269| \n>>   270|                 result = await agent.run(task=\"Name two cities in North America.\")\n     271|                 print(result)\n     272| \n     273| \n     274|             asyncio.run(main())\n     275| \n     276|         **Example 2: model client token streaming**\n     277| \n     278|         This example demonstrates how to create an assistant agent with\n     279|         a model client and generate a token stream by setting `model_client_stream=True`.\n     280| \n     281|         .. code-block:: python\n     282| "
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+  "line": 555,
+  "snippet": "result = await agent.run(task=\"Name two cities in North America.\")",
+  "owasp": "LLM05",
+  "code_context": "     543| \n     544|                 # Create a model context that only keeps the last 2 messages (1 user + 1 assistant).\n     545|                 model_context = BufferedChatCompletionContext(buffer_size=2)\n     546| \n     547|                 # Create an AssistantAgent instance with the model client and context.\n     548|                 agent = AssistantAgent(\n     549|                     name=\"assistant\",\n     550|                     model_client=model_client,\n     551|                     model_context=model_context,\n     552|                     system_message=\"You are a helpful assistant.\",\n     553|                 )\n     554| \n>>   555|                 result = await agent.run(task=\"Name two cities in North America.\")\n     556|                 print(result.messages[-1].content)  # type: ignore\n     557| \n     558|                 result = await agent.run(task=\"My favorite color is blue.\")\n     559|                 print(result.messages[-1].content)  # type: ignore\n     560| \n     561|                 result = await agent.run(task=\"Did I ask you any question?\")\n     562|                 print(result.messages[-1].content)  # type: ignore\n     563| \n     564| \n     565|             asyncio.run(main())\n     566| \n     567|         .. code-block:: text"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+  "line": 558,
+  "snippet": "result = await agent.run(task=\"My favorite color is blue.\")",
+  "owasp": "LLM05",
+  "code_context": "     546| \n     547|                 # Create an AssistantAgent instance with the model client and context.\n     548|                 agent = AssistantAgent(\n     549|                     name=\"assistant\",\n     550|                     model_client=model_client,\n     551|                     model_context=model_context,\n     552|                     system_message=\"You are a helpful assistant.\",\n     553|                 )\n     554| \n     555|                 result = await agent.run(task=\"Name two cities in North America.\")\n     556|                 print(result.messages[-1].content)  # type: ignore\n     557| \n>>   558|                 result = await agent.run(task=\"My favorite color is blue.\")\n     559|                 print(result.messages[-1].content)  # type: ignore\n     560| \n     561|                 result = await agent.run(task=\"Did I ask you any question?\")\n     562|                 print(result.messages[-1].content)  # type: ignore\n     563| \n     564| \n     565|             asyncio.run(main())\n     566| \n     567|         .. code-block:: text\n     568| \n     569|             Two cities in North America are New York City and Toronto.\n     570|             That's great! Blue is often associated with calmness and serenity. Do you have a specific shade of blue that you like, or any particular reason why it's your favorite?"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+  "line": 561,
+  "snippet": "result = await agent.run(task=\"Did I ask you any question?\")",
+  "owasp": "LLM05",
+  "code_context": "     549|                     name=\"assistant\",\n     550|                     model_client=model_client,\n     551|                     model_context=model_context,\n     552|                     system_message=\"You are a helpful assistant.\",\n     553|                 )\n     554| \n     555|                 result = await agent.run(task=\"Name two cities in North America.\")\n     556|                 print(result.messages[-1].content)  # type: ignore\n     557| \n     558|                 result = await agent.run(task=\"My favorite color is blue.\")\n     559|                 print(result.messages[-1].content)  # type: ignore\n     560| \n>>   561|                 result = await agent.run(task=\"Did I ask you any question?\")\n     562|                 print(result.messages[-1].content)  # type: ignore\n     563| \n     564| \n     565|             asyncio.run(main())\n     566| \n     567|         .. code-block:: text\n     568| \n     569|             Two cities in North America are New York City and Toronto.\n     570|             That's great! Blue is often associated with calmness and serenity. Do you have a specific shade of blue that you like, or any particular reason why it's your favorite?\n     571|             No, you didn't ask a question. I apologize for any misunderstanding. If you have something specific you'd like to discuss or ask, feel free to let me know!\n     572| \n     573|         **Example 8: agent with memory**"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+  "line": 609,
+  "snippet": "result = await agent.run(task=\"What is a good dinner idea?\")",
+  "owasp": "LLM05",
+  "code_context": "     597|                 memory = ListMemory()\n     598|                 await memory.add(MemoryContent(content=\"User likes pizza.\", mime_type=\"text/plain\"))\n     599|                 await memory.add(MemoryContent(content=\"User dislikes cheese.\", mime_type=\"text/plain\"))\n     600| \n     601|                 # Create an AssistantAgent instance with the model client and memory.\n     602|                 agent = AssistantAgent(\n     603|                     name=\"assistant\",\n     604|                     model_client=model_client,\n     605|                     memory=[memory],\n     606|                     system_message=\"You are a helpful assistant.\",\n     607|                 )\n     608| \n>>   609|                 result = await agent.run(task=\"What is a good dinner idea?\")\n     610|                 print(result.messages[-1].content)  # type: ignore\n     611| \n     612| \n     613|             asyncio.run(main())\n     614| \n     615|         .. code-block:: text\n     616| \n     617|             How about making a delicious pizza without cheese? You can create a flavorful veggie pizza with a variety of toppings. Here's a quick idea:\n     618| \n     619|             **Veggie Tomato Sauce Pizza**\n     620|             - Start with a pizza crust (store-bought or homemade).\n     621|             - Spread a layer of marinara or tomato sauce evenly over the crust."
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/packages/autogen-agentchat/src/autogen_agentchat/agents/_assistant_agent.py",
+  "line": 648,
+  "snippet": "result = await agent.run(task=\"What is the capital of France?\")",
+  "owasp": "LLM05",
+  "code_context": "     636|             from autogen_ext.models.openai import OpenAIChatCompletionClient\n     637|             from autogen_agentchat.agents import AssistantAgent\n     638| \n     639| \n     640|             async def main() -> None:\n     641|                 model_client = OpenAIChatCompletionClient(\n     642|                     model=\"o1-mini\",\n     643|                     # api_key = \"your_openai_api_key\"\n     644|                 )\n     645|                 # The system message is not supported by the o1 series model.\n     646|                 agent = AssistantAgent(name=\"assistant\", model_client=model_client, system_message=None)\n     647| \n>>   648|                 result = await agent.run(task=\"What is the capital of France?\")\n     649|                 print(result.messages[-1].content)  # type: ignore\n     650| \n     651| \n     652|             asyncio.run(main())\n     653| \n     654|         .. note::\n     655| \n     656|             The `o1-preview` and `o1-mini` models do not support system message and function calling.\n     657|             So the `system_message` should be set to `None` and the `tools` and `handoffs` should not be set.\n     658|             See `o1 beta limitations <https://platform.openai.com/docs/guides/reasoning#beta-limitations>`_ for more details.\n     659| \n     660| "
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/packages/autogen-ext/src/autogen_ext/code_executors/jupyter/_jupyter_code_executor.py",
+  "line": 91,
+  "snippet": "result = await agent.run(task=\"What is the 10th Fibonacci number? Use Python to calculate it.\")",
+  "owasp": "LLM05",
+  "code_context": "      79|         import asyncio\n      80|         from autogen_agentchat.agents import AssistantAgent\n      81|         from autogen_ext.code_executors.jupyter import JupyterCodeExecutor\n      82|         from autogen_ext.models.openai import OpenAIChatCompletionClient\n      83|         from autogen_ext.tools.code_execution import PythonCodeExecutionTool\n      84| \n      85| \n      86|         async def main() -> None:\n      87|             async with JupyterCodeExecutor() as executor:\n      88|                 tool = PythonCodeExecutionTool(executor)\n      89|                 model_client = OpenAIChatCompletionClient(model=\"gpt-4o\")\n      90|                 agent = AssistantAgent(\"assistant\", model_client=model_client, tools=[tool])\n>>    91|                 result = await agent.run(task=\"What is the 10th Fibonacci number? Use Python to calculate it.\")\n      92|                 print(result)\n      93| \n      94| \n      95|         asyncio.run(main())\n      96| \n      97|     Example of using it inside a :class:`~autogen_agentchat.agents._code_executor_agent.CodeExecutorAgent`:\n      98| \n      99|     .. code-block:: python\n     100| \n     101|         import asyncio\n     102|         from autogen_agentchat.agents import CodeExecutorAgent\n     103|         from autogen_agentchat.messages import TextMessage"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/packages/autogen-ext/src/autogen_ext/code_executors/docker_jupyter/_docker_jupyter.py",
+  "line": 118,
+  "snippet": "result = await agent.run(task=\"What is the 10th Fibonacci number? Use Python to calculate it.\")",
+  "owasp": "LLM05",
+  "code_context": "     106|         from autogen_agentchat.agents import AssistantAgent\n     107|         from autogen_ext.code_executors.docker_jupyter import DockerJupyterCodeExecutor, DockerJupyterServer\n     108|         from autogen_ext.models.openai import OpenAIChatCompletionClient\n     109|         from autogen_ext.tools.code_execution import PythonCodeExecutionTool\n     110| \n     111| \n     112|         async def main() -> None:\n     113|             async with DockerJupyterServer() as jupyter_server:\n     114|                 async with DockerJupyterCodeExecutor(jupyter_server=jupyter_server) as executor:\n     115|                     tool = PythonCodeExecutionTool(executor)\n     116|                     model_client = OpenAIChatCompletionClient(model=\"gpt-4o\")\n     117|                     agent = AssistantAgent(\"assistant\", model_client=model_client, tools=[tool])\n>>   118|                     result = await agent.run(task=\"What is the 10th Fibonacci number? Use Python to calculate it.\")\n     119|                     print(result)\n     120| \n     121| \n     122|         asyncio.run(main())\n     123| \n     124|     Example of using it inside a :class:`~autogen_agentchat.agents._code_executor_agent.CodeExecutorAgent`:\n     125| \n     126|     .. code-block:: python\n     127| \n     128|         import asyncio\n     129|         from autogen_agentchat.agents import CodeExecutorAgent\n     130|         from autogen_agentchat.messages import TextMessage"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/packages/autogen-ext/src/autogen_ext/experimental/task_centric_memory/utils/apprentice.py",
+  "line": 170,
+  "snippet": "system_message_content = random_str + system_message_content",
+  "owasp": "LLM01",
+  "code_context": "     158|         system_message_content = \"\"\"You are a helpful and thoughtful assistant.\n     159| In responding to every user message, you follow the same multi-step process given here:\n     160| 1. Explain your understanding of the user message in detail, covering all the important points.\n     161| 2. List as many possible responses as you can think of.\n     162| 3. Carefully list and weigh the pros and cons (if any) of each possible response.\n     163| 4. Critique the pros and cons above, looking for any flaws in your reasoning. But don't make up flaws that don't exist.\n     164| 5. Decide on the best response, looping back to step 1 if none of the responses are satisfactory.\n     165| 6. Finish by providing your final response in the particular format requested by the user.\"\"\"\n     166| \n     167|         if self.disable_prefix_caching:\n     168|             # Prepend a random int to disable prefix caching.\n     169|             random_str = \"({})\\n\\n\".format(self.rand.randint(0, 1000000))\n>>   170|             system_message_content = random_str + system_message_content\n     171| \n     172|         system_message: LLMMessage\n     173|         if self.client.model_info[\"family\"] == \"o1\":\n     174|             # No system message allowed, so pass it as the first user message.\n     175|             system_message = UserMessage(content=system_message_content, source=\"User\")\n     176|         else:\n     177|             # System message allowed.\n     178|             system_message = SystemMessage(content=system_message_content)\n     179| \n     180|         user_message: LLMMessage = UserMessage(content=task, source=\"User\")\n     181|         system_message_list: List[LLMMessage] = [system_message]\n     182|         user_message_list: List[LLMMessage] = [user_message]"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "python/packages/autogen-studio/frontend/src/components/views/teambuilder/builder/component-editor/fields/workbench/mcp-prompts-tab.tsx",
+  "line": 97,
+  "snippet": "`Failed to fetch prompts: ${err.message || \"Unknown error\"}`",
+  "owasp": "LLM01",
+  "code_context": "      85|     try {\n      86|       const result = await wsClient.executeOperation({\n      87|         operation: \"list_prompts\",\n      88|       });\n      89| \n      90|       if (result?.prompts) {\n      91|         setPrompts(result.prompts);\n      92|       } else {\n      93|         setLoadingError(\"No prompts received from server\");\n      94|       }\n      95|     } catch (err: any) {\n      96|       setLoadingError(\n>>    97|         `Failed to fetch prompts: ${err.message || \"Unknown error\"}`\n      98|       );\n      99|     } finally {\n     100|       setLoadingPrompts(false);\n     101|     }\n     102|   }, [connected]);\n     103| \n     104|   // Validation function for required prompt arguments\n     105|   const validatePromptArguments = useCallback(\n     106|     (prompt: Prompt, promptArgs: Record<string, any>): string[] => {\n     107|       const errors: string[] = [];\n     108|       const requiredArgs =\n     109|         prompt.arguments?.filter((arg) => arg.required) || [];"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "python/packages/autogen-studio/frontend/src/components/views/teambuilder/builder/component-editor/fields/workbench/mcp-prompts-tab.tsx",
+  "line": 196,
+  "snippet": "setError(`Failed to get prompt: ${err.message || \"Unknown error\"}`);",
+  "owasp": "LLM01",
+  "code_context": "     184|         });\n     185| \n     186|         if (result) {\n     187|           setPromptResult({\n     188|             name: result.name || prompt.name,\n     189|             description: result.description,\n     190|             messages: result.messages || [],\n     191|           });\n     192|         } else {\n     193|           setError(\"No prompt result received\");\n     194|         }\n     195|       } catch (err: any) {\n>>   196|         setError(`Failed to get prompt: ${err.message || \"Unknown error\"}`);\n     197|       } finally {\n     198|         setLoadingPrompt(false);\n     199|       }\n     200|     },\n     201|     [connected, wsClient, promptArguments, validatePromptArguments]\n     202|   );\n     203| \n     204|   // Auto-scroll to prompt result when it appears\n     205|   useEffect(() => {\n     206|     if (promptResult && promptResultRef.current) {\n     207|       setTimeout(() => {\n     208|         promptResultRef.current?.scrollIntoView({"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/packages/autogen-studio/autogenstudio/eval/judges.py",
+  "line": 110,
+  "snippet": "prompt = f\"\"\"",
+  "owasp": "LLM01",
+  "code_context": "      98|         self,\n      99|         task: EvalTask,\n     100|         result: EvalRunResult,\n     101|         criterion: EvalJudgeCriteria,\n     102|         cancellation_token: Optional[CancellationToken] = None,\n     103|     ) -> EvalDimensionScore:\n     104|         \"\"\"Judge a specific dimension.\"\"\"\n     105|         # Format task and result for the LLM\n     106|         task_description = self._format_task(task)\n     107|         result_description = result.model_dump()\n     108| \n     109|         # Create the prompt\n>>   110|         prompt = f\"\"\"\n     111|         You are evaluating the quality of a system response to a task.\n     112|         Task: {task_description}Response: {result_description}\n     113|         Evaluation criteria: {criterion.dimension}\n     114|         {criterion.prompt}\n     115|         Score the response on a scale from {criterion.min_value} to {criterion.max_value}.\n     116|         First, provide a detailed explanation of your evaluation.\n     117|         Then, give your final score as a single number between 0 and {criterion.max_value}.\n     118|         Format your answer should be a json for the EvalDimensionScore class:\n     119|         {{\n     120|             \"dimension\": \"{criterion.dimension}\",\n     121|             \"reason\": \"<explanation>\",\n     122|             \"score\": <score>"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/packages/agbench/benchmarks/GAIA/Templates/MagenticOne/scenario.py",
+  "line": 81,
+  "snippet": "filename_prompt = f\"The question is about a file, document or image, which can be accessed by the filename '{filename}' in the current working directory.\"",
+  "owasp": "LLM01",
+  "code_context": "      69| To output the final answer, use the following template: FINAL ANSWER: [YOUR FINAL ANSWER]\n      70| Your FINAL ANSWER should be a number OR as few words as possible OR a comma separated list of numbers and/or strings.\n      71| ADDITIONALLY, your FINAL ANSWER MUST adhere to any formatting instructions specified in the original question (e.g., alphabetization, sequencing, units, rounding, decimal places, etc.)\n      72| If you are asked for a number, express it numerically (i.e., with digits rather than words), don't use commas, and don't include units such as $ or percent signs unless specified otherwise.\n      73| If you are asked for a string, don't use articles or abbreviations (e.g. for cities), unless specified otherwise. Don't output any final sentence punctuation such as '.', '!', or '?'.\n      74| If you are asked for a comma separated list, apply the above rules depending on whether the elements are numbers or strings.\n      75| \"\"\".strip()\n      76|     )\n      77| \n      78|     # Prepare the prompt\n      79|     filename_prompt = \"\"\n      80|     if len(filename) > 0:\n>>    81|         filename_prompt = f\"The question is about a file, document or image, which can be accessed by the filename '{filename}' in the current working directory.\"\n      82|     task = f\"{prompt}\\n\\n{filename_prompt}\"\n      83| \n      84|     # Run the task\n      85|     stream = team.run_stream(task=task.strip())\n      86|     await Console(stream)\n      87| \n      88| if __name__ == \"__main__\":\n      89|     asyncio.run(main())"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/packages/agbench/benchmarks/GAIA/Templates/SelectorGroupChat/scenario.py",
+  "line": 66,
+  "snippet": "filename_prompt = f\"The question is about a file, document or image, which can be accessed by the filename '{filename}' in the current working directory.\"",
+  "owasp": "LLM01",
+  "code_context": "      54| \n      55|     web_surfer = MultimodalWebSurfer(\n      56|         name=\"WebSurfer\",\n      57|         model_client = web_surfer_client,\n      58|         downloads_folder=os.getcwd(),\n      59|         debug_dir=\"logs\",\n      60|         to_save_screenshots=True,\n      61|     )\n      62| \n      63|     # Prepare the prompt\n      64|     filename_prompt = \"\"\n      65|     if len(filename) > 0:\n>>    66|         filename_prompt = f\"The question is about a file, document or image, which can be accessed by the filename '{filename}' in the current working directory.\"\n      67|     task = f\"{prompt}\\n\\n{filename_prompt}\"\n      68| \n      69|     # Termination conditions\n      70|     max_messages_termination = MaxMessageTermination(max_messages=20)\n      71|     llm_termination = LLMTermination(\n      72|         prompt=f\"\"\"Consider the following task:\n      73| {task.strip()}\n      74| \n      75| Does the above conversation suggest that the task has been solved?\n      76| If so, reply \"TERMINATE\", otherwise reply \"CONTINUE\"\n      77| \"\"\",\n      78|         model_client=orchestrator_client"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/packages/agbench/benchmarks/GAIA/Templates/ParallelAgents/scenario.py",
+  "line": 287,
+  "snippet": "filename_prompt = f\"The question is about a file, document or image, which can be accessed by the filename '{filename}' in the current working directory.\"",
+  "owasp": "LLM01",
+  "code_context": "     275|     web_surfer_client = ChatCompletionClient.load_component(config[\"web_surfer_client\"])\n     276|     file_surfer_client = ChatCompletionClient.load_component(config[\"file_surfer_client\"])\n     277| \n     278|     # Read the prompt\n     279|     prompt = \"\"\n     280|     with open(\"prompt.txt\", \"rt\") as fh:\n     281|         prompt = fh.read().strip()\n     282|     filename = \"__FILE_NAME__\".strip()\n     283| \n     284|     # Prepare the prompt\n     285|     filename_prompt = \"\"\n     286|     if len(filename) > 0:\n>>   287|         filename_prompt = f\"The question is about a file, document or image, which can be accessed by the filename '{filename}' in the current working directory.\"\n     288|     task = f\"{prompt}\\n\\n{filename_prompt}\"\n     289| \n     290|     # Reset logs directory (remove all files in it)\n     291|     logs_dir = \"logs\"\n     292|     if os.path.exists(logs_dir):\n     293|         shutil.rmtree(logs_dir)\n     294| \n     295|     teams = []\n     296|     async_tasks = []\n     297|     tokens = []\n     298|     for team_idx in range(num_teams):\n     299|         # Set up the team"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/samples/agentchat_chess_game/main.py",
+  "line": 44,
+  "snippet": "prompt = f\"Board: {board.fen()}\\nYou play {player_color}\\nUser ({user_color})'s last move: {last_move}\\nYour legal moves: {legal_moves}\\n\"",
+  "owasp": "LLM01",
+  "code_context": "      32| def get_ai_prompt(board: chess.Board) -> str:\n      33|     try:\n      34|         last_move = board.peek().uci()\n      35|     except IndexError:\n      36|         last_move = None\n      37|     # Current player color.\n      38|     player_color = \"white\" if board.turn == chess.WHITE else \"black\"\n      39|     user_color = \"black\" if player_color == \"white\" else \"white\"\n      40|     legal_moves = \", \".join([move.uci() for move in board.legal_moves])\n      41|     if last_move is None:\n      42|         prompt = f\"New Game!\\nBoard: {board.fen()}\\nYou play {player_color}\\nYour legal moves: {legal_moves}\\n\"\n      43|     else:\n>>    44|         prompt = f\"Board: {board.fen()}\\nYou play {player_color}\\nUser ({user_color})'s last move: {last_move}\\nYour legal moves: {legal_moves}\\n\"\n      45|     example_move = get_random_move(board)\n      46|     return (\n      47|         prompt\n      48|         + \"Respond with this format: <move>{your move in UCI format}</move>. \"\n      49|         + f\"For example, <move>{example_move}</move>.\"\n      50|     )\n      51| \n      52| \n      53| def get_user_prompt(board: chess.Board) -> str:\n      54|     try:\n      55|         last_move = board.peek().uci()\n      56|     except IndexError:"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/samples/core_distributed-group-chat/_agents.py",
+  "line": 121,
+  "snippet": "selector_prompt = f\"\"\"You are in a role play game. The following roles are available:",
+  "owasp": "LLM01",
+  "code_context": "     109|                 )\n     110|                 if topic_type != self._previous_participant_topic_type\n     111|             ]\n     112|         )\n     113|         participants = str(\n     114|             [\n     115|                 topic_type\n     116|                 for topic_type in self._participant_topic_types\n     117|                 if topic_type != self._previous_participant_topic_type\n     118|             ]\n     119|         )\n     120| \n>>   121|         selector_prompt = f\"\"\"You are in a role play game. The following roles are available:\n     122| {roles}.\n     123| Read the following conversation. Then select the next role from {participants} to play. Only return the role.\n     124| \n     125| {history}\n     126| \n     127| Read the above conversation. Then select the next role from {participants} to play. if you think it's enough talking (for example they have talked for {self._max_rounds} rounds), return 'FINISH'.\n     128| \"\"\"\n     129|         system_message = SystemMessage(content=selector_prompt)\n     130|         completion = await self._model_client.create([system_message], cancellation_token=ctx.cancellation_token)\n     131| \n     132|         assert isinstance(\n     133|             completion.content, str"
+ },
+ {
+  "repo": "microsoft/autogen",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/samples/gitty/src/gitty/_gitty.py",
+  "line": 127,
+  "snippet": "updated_prompt = (",
+  "owasp": "LLM01",
+  "code_context": "     115|         console.print(\"  [observe]> No mentioned issues found.[/observe]\")\n     116| \n     117|     related_issues = get_related_issues(number, text, get_gitty_dir())\n     118|     console.print(\"\\n[thinking]- Checking for other related issues...[/thinking]\")\n     119| \n     120|     if len(related_issues) > 0:\n     121|         console.print(f\"  [observe]> Found related issues: {related_issues}.[/observe]\")\n     122|         task = f\"Fetch related issues and generate tldrs for each of them: {related_issues}\"\n     123|         text = await _run(agent, task)\n     124|     else:\n     125|         console.print(\"  [observe]> No related issues found.[/observe]\")\n     126| \n>>   127|     updated_prompt = (\n     128|         \"Considering the additional context:\\n\"\n     129|         f\"You are working on issue #{number} for the {owner}/{repo} repository. \"\n     130|         \"The issue content is:\\n\"\n     131|         f\"{text}\\n\\n\"\n     132|         \"You also previously fetched related issues that may or may not be relevant\"\n     133|         \"Answer the following questions:\"\n     134|         f\"- What facts are known based on the issue thread # {number}? \"\n     135|         f\"- What is the main issue or problem in #{number}?\"\n     136|         f\"- Which other issues are truly relevant to #{number}?\"\n     137|         \"- What type of a new response from the maintainers would help make progress on this issue? Be concise.\"\n     138|     )\n     139| "
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai/src/crewai/flow/conversational_mixin.py",
+  "line": 1361,
+  "snippet": "routing_prompt = (",
+  "owasp": "LLM01",
+  "code_context": "    1349|     def _build_router_messages(\n    1350|         self,\n    1351|         router_config: RouterConfig,\n    1352|         context: dict[str, Any],\n    1353|     ) -> list[LLMMessage]:\n    1354|         catalog = self._build_route_catalog(router_config)\n    1355|         context = {**context, \"available_routes\": sorted(catalog.keys())}\n    1356|         domain_prompt = f\"{router_config.prompt}\\n\\n\" if router_config.prompt else \"\"\n    1357|         routes_section = \"Routes:\\n\" + \"\\n\".join(\n    1358|             f\"- {label}: {description}\" if description else f\"- {label}\"\n    1359|             for label, description in sorted(catalog.items())\n    1360|         )\n>>  1361|         routing_prompt = (\n    1362|             domain_prompt\n    1363|             + routes_section\n    1364|             + \"\\n\\nChoose exactly one route from the list above. Prefer \"\n    1365|             \"'converse' for follow-ups, summaries, and clarifications about \"\n    1366|             \"prior turns \u2014 even if they touch on a topic the user previously \"\n    1367|             \"invoked a custom route for. Use a custom route only when the user \"\n    1368|             \"is making a fresh request for that tool or workflow.\"\n    1369|         )\n    1370|         return [\n    1371|             {\"role\": \"system\", \"content\": routing_prompt},\n    1372|             {\"role\": \"user\", \"content\": json.dumps(context, default=str)},\n    1373|         ]"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai/src/crewai/utilities/crew_chat.py",
+  "line": 468,
+  "snippet": "prompt = (",
+  "owasp": "LLM01",
+  "code_context": "     456|             agent_goal = placeholder_pattern.sub(lambda m: m.group(1), agent.goal or \"\")\n     457|             agent_backstory = placeholder_pattern.sub(\n     458|                 lambda m: m.group(1), agent.backstory or \"\"\n     459|             )\n     460|             context_texts.append(f\"Agent Role: {agent_role}\")\n     461|             context_texts.append(f\"Agent Goal: {agent_goal}\")\n     462|             context_texts.append(f\"Agent Backstory: {agent_backstory}\")\n     463| \n     464|     context = \"\\n\".join(context_texts)\n     465|     if not context:\n     466|         raise ValueError(f\"No context found for input '{input_name}'.\")\n     467| \n>>   468|     prompt = (\n     469|         f\"Based on the following context, write a concise description (15 words or less) of the input '{input_name}'.\\n\"\n     470|         \"Provide only the description, without any extra text or labels. Do not include placeholders like '{topic}' in the description.\\n\"\n     471|         \"Context:\\n\"\n     472|         f\"{context}\"\n     473|     )\n     474|     try:\n     475|         response = chat_llm.call(messages=[{\"role\": \"user\", \"content\": prompt}])\n     476|     except HookAborted:\n     477|         raise\n     478|     except Exception as exc:\n     479|         click.secho(\n     480|             f\"Warning: failed to generate input description for '{input_name}' \""
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai/src/crewai/utilities/crew_chat.py",
+  "line": 526,
+  "snippet": "prompt = (",
+  "owasp": "LLM01",
+  "code_context": "     514|         agent_goal = placeholder_pattern.sub(lambda m: m.group(1), agent.goal or \"\")\n     515|         agent_backstory = placeholder_pattern.sub(\n     516|             lambda m: m.group(1), agent.backstory or \"\"\n     517|         )\n     518|         context_texts.append(f\"Agent Role: {agent_role}\")\n     519|         context_texts.append(f\"Agent Goal: {agent_goal}\")\n     520|         context_texts.append(f\"Agent Backstory: {agent_backstory}\")\n     521| \n     522|     context = \"\\n\".join(context_texts)\n     523|     if not context:\n     524|         raise ValueError(\"No context found for generating crew description.\")\n     525| \n>>   526|     prompt = (\n     527|         \"Based on the following context, write a concise, action-oriented description (15 words or less) of the crew's purpose.\\n\"\n     528|         \"Provide only the description, without any extra text or labels. Do not include placeholders like '{topic}' in the description.\\n\"\n     529|         \"Context:\\n\"\n     530|         f\"{context}\"\n     531|     )\n     532|     try:\n     533|         response = chat_llm.call(messages=[{\"role\": \"user\", \"content\": prompt}])\n     534|     except HookAborted:\n     535|         raise\n     536|     except Exception as exc:\n     537|         click.secho(\n     538|             f\"Warning: failed to generate crew description ({exc}); using default.\","
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai/src/crewai/utilities/prompts.py",
+  "line": 254,
+  "snippet": "prompt = f\"{system}\\n{prompt}\\n{response}\"",
+  "owasp": "LLM01",
+  "code_context": "     242|                 I18N_DEFAULT.slice(component)\n     243|                 for component in components\n     244|                 if component not in task_slices\n     245|             ]\n     246|             system: str = system_template.replace(\n     247|                 \"{{ .System }}\", \"\".join(template_parts)\n     248|             )\n     249|             prompt = prompt_template.replace(\n     250|                 \"{{ .Prompt }}\", \"\".join(I18N_DEFAULT.slice(task_component))\n     251|             )\n     252|             if response_template:\n     253|                 response: str = response_template.split(\"{{ .Response }}\")[0]\n>>   254|                 prompt = f\"{system}\\n{prompt}\\n{response}\"\n     255|             else:\n     256|                 prompt = f\"{system}\\n{prompt}\"\n     257| \n     258|         return (\n     259|             prompt.replace(\"{goal}\", self.agent.goal)\n     260|             .replace(\"{role}\", self.agent.role)\n     261|             .replace(\"{backstory}\", self.agent.backstory)\n     262|         )"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai/src/crewai/utilities/prompts.py",
+  "line": 256,
+  "snippet": "prompt = f\"{system}\\n{prompt}\"",
+  "owasp": "LLM01",
+  "code_context": "     244|                 if component not in task_slices\n     245|             ]\n     246|             system: str = system_template.replace(\n     247|                 \"{{ .System }}\", \"\".join(template_parts)\n     248|             )\n     249|             prompt = prompt_template.replace(\n     250|                 \"{{ .Prompt }}\", \"\".join(I18N_DEFAULT.slice(task_component))\n     251|             )\n     252|             if response_template:\n     253|                 response: str = response_template.split(\"{{ .Response }}\")[0]\n     254|                 prompt = f\"{system}\\n{prompt}\\n{response}\"\n     255|             else:\n>>   256|                 prompt = f\"{system}\\n{prompt}\"\n     257| \n     258|         return (\n     259|             prompt.replace(\"{goal}\", self.agent.goal)\n     260|             .replace(\"{role}\", self.agent.role)\n     261|             .replace(\"{backstory}\", self.agent.backstory)\n     262|         )"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai/src/crewai/a2a/wrapper.py",
+  "line": 730,
+  "snippet": "augmented_prompt = f\"\"\"{task_description}",
+  "owasp": "LLM01",
+  "code_context": "     718|                 \"CRITICAL: This is the FINAL turn. You MUST conclude the conversation now.\\n\"\n     719|                 \"Set is_a2a=false and provide your final response to complete the task.\"\n     720|             )\n     721|         elif turn_count == max_turns - 1:\n     722|             warning = \"WARNING: Next turn will be the last. Consider wrapping up the conversation.\"\n     723| \n     724|         turn_info = CONVERSATION_TURN_INFO_TEMPLATE.substitute(\n     725|             turn_count=turn_count,\n     726|             max_turns=max_turns,\n     727|             warning=warning,\n     728|         )\n     729| \n>>   730|     augmented_prompt = f\"\"\"{task_description}\n     731| \n     732| IMPORTANT: You have the ability to delegate this task to remote A2A agents.\n     733| {agents_text}\n     734| {history_text}{turn_info}{remote_status_notice}\n     735| \n     736| \"\"\"\n     737| \n     738|     if extension_registry:\n     739|         augmented_prompt = extension_registry.augment_prompt_with_all(\n     740|             augmented_prompt, extension_states\n     741|         )\n     742| "
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+  "line": 1283,
+  "snippet": "response = self._get_sync_client().models.generate_content(",
+  "owasp": "LLM05",
+  "code_context": "    1271|         self,\n    1272|         contents: list[types.Content],\n    1273|         config: types.GenerateContentConfig,\n    1274|         available_functions: dict[str, Any] | None = None,\n    1275|         from_task: Any | None = None,\n    1276|         from_agent: Any | None = None,\n    1277|         response_model: type[BaseModel] | None = None,\n    1278|     ) -> str | Any:\n    1279|         \"\"\"Handle non-streaming content generation.\"\"\"\n    1280|         try:\n    1281|             # The API accepts list[Content] but mypy is overly strict about variance\n    1282|             contents_for_api: Any = contents\n>>  1283|             response = self._get_sync_client().models.generate_content(\n    1284|                 model=self.model,\n    1285|                 contents=contents_for_api,\n    1286|                 config=config,\n    1287|             )\n    1288| \n    1289|             usage = self._extract_token_usage(response)\n    1290|         except Exception as e:\n    1291|             if is_context_length_exceeded(e):\n    1292|                 logging.error(f\"Context window exceeded: {e}\")\n    1293|                 raise LLMContextLengthExceededError(str(e)) from e\n    1294|             raise e from e\n    1295| "
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+  "line": 1326,
+  "snippet": "for chunk in self._get_sync_client().models.generate_content_stream(",
+  "owasp": "LLM05",
+  "code_context": "    1314|         from_agent: Any | None = None,\n    1315|         response_model: type[BaseModel] | None = None,\n    1316|     ) -> str | BaseModel | list[dict[str, Any]] | Any:\n    1317|         \"\"\"Handle streaming content generation.\"\"\"\n    1318|         full_response = \"\"\n    1319|         function_calls: dict[int, dict[str, Any]] = {}\n    1320|         usage_data: dict[str, int] | None = None\n    1321|         stream_finish_reason: str | None = None\n    1322|         stream_response_id: str | None = None\n    1323| \n    1324|         # The API accepts list[Content] but mypy is overly strict about variance\n    1325|         contents_for_api: Any = contents\n>>  1326|         for chunk in self._get_sync_client().models.generate_content_stream(\n    1327|             model=self.model,\n    1328|             contents=contents_for_api,\n    1329|             config=config,\n    1330|         ):\n    1331|             (\n    1332|                 full_response,\n    1333|                 function_calls,\n    1334|                 usage_data,\n    1335|                 chunk_finish_reason,\n    1336|                 chunk_response_id,\n    1337|             ) = self._process_stream_chunk(\n    1338|                 chunk=chunk,"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+  "line": 1376,
+  "snippet": "response = await self._get_async_client().aio.models.generate_content(",
+  "owasp": "LLM05",
+  "code_context": "    1364|         self,\n    1365|         contents: list[types.Content],\n    1366|         config: types.GenerateContentConfig,\n    1367|         available_functions: dict[str, Any] | None = None,\n    1368|         from_task: Any | None = None,\n    1369|         from_agent: Any | None = None,\n    1370|         response_model: type[BaseModel] | None = None,\n    1371|     ) -> str | Any:\n    1372|         \"\"\"Handle async non-streaming content generation.\"\"\"\n    1373|         try:\n    1374|             # The API accepts list[Content] but mypy is overly strict about variance\n    1375|             contents_for_api: Any = contents\n>>  1376|             response = await self._get_async_client().aio.models.generate_content(\n    1377|                 model=self.model,\n    1378|                 contents=contents_for_api,\n    1379|                 config=config,\n    1380|             )\n    1381| \n    1382|             usage = self._extract_token_usage(response)\n    1383|         except Exception as e:\n    1384|             if is_context_length_exceeded(e):\n    1385|                 logging.error(f\"Context window exceeded: {e}\")\n    1386|                 raise LLMContextLengthExceededError(str(e)) from e\n    1387|             raise e from e\n    1388| "
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "lib/crewai/src/crewai/llms/providers/gemini/completion.py",
+  "line": 1419,
+  "snippet": "stream = await self._get_async_client().aio.models.generate_content_stream(",
+  "owasp": "LLM05",
+  "code_context": "    1407|         from_agent: Any | None = None,\n    1408|         response_model: type[BaseModel] | None = None,\n    1409|     ) -> str | Any:\n    1410|         \"\"\"Handle async streaming content generation.\"\"\"\n    1411|         full_response = \"\"\n    1412|         function_calls: dict[int, dict[str, Any]] = {}\n    1413|         usage_data: dict[str, int] | None = None\n    1414|         stream_finish_reason: str | None = None\n    1415|         stream_response_id: str | None = None\n    1416| \n    1417|         # The API accepts list[Content] but mypy is overly strict about variance\n    1418|         contents_for_api: Any = contents\n>>  1419|         stream = await self._get_async_client().aio.models.generate_content_stream(\n    1420|             model=self.model,\n    1421|             contents=contents_for_api,\n    1422|             config=config,\n    1423|         )\n    1424|         async for chunk in stream:\n    1425|             (\n    1426|                 full_response,\n    1427|                 function_calls,\n    1428|                 usage_data,\n    1429|                 chunk_finish_reason,\n    1430|                 chunk_response_id,\n    1431|             ) = self._process_stream_chunk("
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "lib/crewai/src/crewai/llms/providers/bedrock/completion.py",
+  "line": 781,
+  "snippet": "response = self._get_sync_client().converse(",
+  "owasp": "LLM05",
+  "code_context": "     769|                 raise ValueError(\"Messages cannot be empty\")\n     770| \n     771|             # Ensure we have valid message structure\n     772|             for i, msg in enumerate(messages):\n     773|                 if (\n     774|                     not isinstance(msg, dict)\n     775|                     or \"role\" not in msg\n     776|                     or \"content\" not in msg\n     777|                 ):\n     778|                     raise ValueError(f\"Invalid message format at index {i}\")\n     779| \n     780|             # Call Bedrock Converse API with proper error handling\n>>   781|             response = self._get_sync_client().converse(\n     782|                 modelId=self.model_id,\n     783|                 messages=cast(\n     784|                     \"Sequence[MessageTypeDef | MessageOutputTypeDef]\",\n     785|                     cast(object, messages),\n     786|                 ),\n     787|                 **body,\n     788|             )\n     789| \n     790|             # Track token usage according to AWS response format\n     791|             usage = response.get(\"usage\")\n     792|             if usage:\n     793|                 self._track_token_usage_internal(usage)"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "lib/crewai/src/crewai/llms/providers/bedrock/completion.py",
+  "line": 1397,
+  "snippet": "response = await async_client.converse(",
+  "owasp": "LLM05",
+  "code_context": "    1385|             if not messages:\n    1386|                 raise ValueError(\"Messages cannot be empty\")\n    1387| \n    1388|             for i, msg in enumerate(messages):\n    1389|                 if (\n    1390|                     not isinstance(msg, dict)\n    1391|                     or \"role\" not in msg\n    1392|                     or \"content\" not in msg\n    1393|                 ):\n    1394|                     raise ValueError(f\"Invalid message format at index {i}\")\n    1395| \n    1396|             async_client = await self._ensure_async_client()\n>>  1397|             response = await async_client.converse(\n    1398|                 modelId=self.model_id,\n    1399|                 messages=cast(\n    1400|                     \"Sequence[MessageTypeDef | MessageOutputTypeDef]\",\n    1401|                     cast(object, messages),\n    1402|                 ),\n    1403|                 **body,\n    1404|             )\n    1405| \n    1406|             usage = response.get(\"usage\")\n    1407|             if usage:\n    1408|                 self._track_token_usage_internal(usage)\n    1409| "
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "lib/crewai/src/crewai/llms/providers/anthropic/completion.py",
+  "line": 1145,
+  "snippet": "response = self._get_sync_client().beta.messages.create(",
+  "owasp": "LLM05",
+  "code_context": "    1133|             else:\n    1134|                 structured_tool = {\n    1135|                     \"name\": \"structured_output\",\n    1136|                     \"description\": \"Output the structured response\",\n    1137|                     \"input_schema\": schema,\n    1138|                 }\n    1139|                 params[\"tools\"] = [structured_tool]\n    1140|                 params[\"tool_choice\"] = {\"type\": \"tool\", \"name\": \"structured_output\"}\n    1141| \n    1142|         try:\n    1143|             if betas:\n    1144|                 params[\"betas\"] = betas\n>>  1145|                 response = self._get_sync_client().beta.messages.create(\n    1146|                     **params, extra_body=extra_body\n    1147|                 )\n    1148|             else:\n    1149|                 response = self._get_sync_client().messages.create(**params)\n    1150| \n    1151|         except Exception as e:\n    1152|             if is_context_length_exceeded(e):\n    1153|                 logging.error(f\"Context window exceeded: {e}\")\n    1154|                 raise LLMContextLengthExceededError(str(e)) from e\n    1155|             raise e from e\n    1156| \n    1157|         usage = self._extract_anthropic_token_usage(response)"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "lib/crewai/src/crewai/llms/providers/anthropic/completion.py",
+  "line": 1149,
+  "snippet": "response = self._get_sync_client().messages.create(**params)",
+  "owasp": "LLM05",
+  "code_context": "    1137|                     \"input_schema\": schema,\n    1138|                 }\n    1139|                 params[\"tools\"] = [structured_tool]\n    1140|                 params[\"tool_choice\"] = {\"type\": \"tool\", \"name\": \"structured_output\"}\n    1141| \n    1142|         try:\n    1143|             if betas:\n    1144|                 params[\"betas\"] = betas\n    1145|                 response = self._get_sync_client().beta.messages.create(\n    1146|                     **params, extra_body=extra_body\n    1147|                 )\n    1148|             else:\n>>  1149|                 response = self._get_sync_client().messages.create(**params)\n    1150| \n    1151|         except Exception as e:\n    1152|             if is_context_length_exceeded(e):\n    1153|                 logging.error(f\"Context window exceeded: {e}\")\n    1154|                 raise LLMContextLengthExceededError(str(e)) from e\n    1155|             raise e from e\n    1156| \n    1157|         usage = self._extract_anthropic_token_usage(response)\n    1158|         self._track_token_usage_internal(usage)\n    1159| \n    1160|         finish_reason, response_id = self._extract_finish_reason_and_id(response)\n    1161| "
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai/src/crewai/llms/providers/openai/completion.py",
+  "line": 1039,
+  "snippet": "instructions = f\"{instructions}\\n\\n{content_str}\"",
+  "owasp": "LLM01",
+  "code_context": "    1027|         - `instructions` for system-level guidance (extracted from system messages)\n    1028|         - `text.format` instead of `response_format` for structured outputs\n    1029|         - Internally-tagged tool format (flat structure)\n    1030|         \"\"\"\n    1031|         instructions: str | None = self.instructions\n    1032|         input_messages: list[dict[str, Any] | LLMMessage] = []\n    1033| \n    1034|         for message in messages:\n    1035|             if message.get(\"role\") == \"system\":\n    1036|                 content = message.get(\"content\", \"\")\n    1037|                 content_str = content if isinstance(content, str) else str(content)\n    1038|                 if instructions:\n>>  1039|                     instructions = f\"{instructions}\\n\\n{content_str}\"\n    1040|                 else:\n    1041|                     instructions = content_str\n    1042|             else:\n    1043|                 input_messages.extend(self._to_responses_input(message))\n    1044| \n    1045|         # Prepend reasoning items for ZDR (zero-data-retention) chaining when configured\n    1046|         final_input: list[dict[str, Any] | LLMMessage] = []\n    1047|         if self.auto_chain_reasoning and self._last_reasoning_items:\n    1048|             final_input.extend(self._last_reasoning_items)\n    1049|         final_input.extend(input_messages if input_messages else messages)\n    1050| \n    1051|         params: dict[str, Any] = {"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai/src/crewai/memory/recall_flow.py",
+  "line": 313,
+  "snippet": "prompt = (",
+  "owasp": "LLM01",
+  "code_context": "     301|         Decrements the exploration budget so the loop terminates.\n     302|         \"\"\"\n     303|         from crewai.hooks.dispatch import HookAborted\n     304| \n     305|         self.state.exploration_budget -= 1\n     306| \n     307|         enhanced = []\n     308|         for finding in self.state.chunk_findings:\n     309|             if not finding.get(\"results\"):\n     310|                 continue\n     311|             content_parts = [r[0].content for r in finding[\"results\"][:5]]\n     312|             chunk_text = \"\\n---\\n\".join(content_parts)\n>>   313|             prompt = (\n     314|                 f\"Query: {self.state.query}\\n\\n\"\n     315|                 f\"Relevant memory excerpts:\\n{chunk_text}\\n\\n\"\n     316|                 \"Extract the most relevant information for the query. \"\n     317|                 \"If something is missing, say what's missing in one short line.\"\n     318|             )\n     319|             try:\n     320|                 response = self._llm.call([{\"role\": \"user\", \"content\": prompt}])\n     321|                 if isinstance(response, str) and \"missing\" in response.lower():\n     322|                     self.state.evidence_gaps.append(response[:200])\n     323|                 enhanced.append(\n     324|                     {\n     325|                         \"scope\": finding[\"scope\"],"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/crewai-tools/src/crewai_tools/aws/bedrock/agents/invoke_agent_tool.py",
+  "line": 111,
+  "snippet": "prompt = f\"\"\"",
+  "owasp": "LLM01",
+  "code_context": "      99|             ) from e\n     100| \n     101|         try:\n     102|             # Initialize the Bedrock Agent Runtime client\n     103|             bedrock_agent = boto3.client(\n     104|                 \"bedrock-agent-runtime\",\n     105|                 region_name=os.getenv(\n     106|                     \"AWS_REGION\", os.getenv(\"AWS_DEFAULT_REGION\", \"us-west-2\")\n     107|                 ),\n     108|             )\n     109| \n     110|             current_utc = datetime.now(timezone.utc)\n>>   111|             prompt = f\"\"\"\n     112| The current time is: {current_utc}\n     113| \n     114| Below is the users query or task. Complete it and answer it consicely and to the point:\n     115| {query}\n     116| \"\"\"\n     117| \n     118|             # Invoke the agent\n     119|             response = bedrock_agent.invoke_agent(\n     120|                 agentId=self.agent_id,\n     121|                 agentAliasId=self.agent_alias_id,\n     122|                 sessionId=self.session_id,\n     123|                 inputText=prompt,"
+ },
+ {
+  "repo": "crewAIInc/crewAI",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "lib/cli/src/crewai_cli/tui_picker.py",
+  "line": 128,
+  "snippet": "search_prompt = f\"{query}\u2588  \u00b7  {count} {noun}  \u00b7  Esc to clear\"",
+  "owasp": "LLM01",
+  "code_context": "     116|         # Erase the previous block first. A shorter search result would\n     117|         # otherwise leave the old rows visible underneath the matches.\n     118|         _clear_lines(previous_line_count or 1)\n     119|     extra_lines = 0\n     120|     if searchable:\n     121|         search_width = min(\n     122|             52,\n     123|             max(len(search_title) + 1, shutil.get_terminal_size().columns - 6),\n     124|         )\n     125|         if query:\n     126|             count = len(rows)\n     127|             noun = \"match\" if count == 1 else \"matches\"\n>>   128|             search_prompt = f\"{query}\u2588  \u00b7  {count} {noun}  \u00b7  Esc to clear\"\n     129|         else:\n     130|             search_prompt = \"type to filter\"\n     131|         search_prompt = search_prompt[:search_width]\n     132|         title_fill = \"\u2500\" * (search_width - len(search_title) - 1)\n     133|         sys.stdout.write(\"\\033[2K\\n\")\n     134|         sys.stdout.write(\n     135|             f\"\\033[2K  {_GREEN}\u256d\u2500 {_BOLD}{search_title}{_GREEN} {title_fill}\u256e{_RESET}\\n\"\n     136|         )\n     137|         sys.stdout.write(\n     138|             f\"\\033[2K  {_GREEN}\u2502 {_BOLD}{search_prompt:<{search_width}s}{_GREEN} \u2502{_RESET}\\n\"\n     139|         )\n     140|         sys.stdout.write(f\"\\033[2K  {_GREEN}\u2570{'\u2500' * (search_width + 2)}\u256f{_RESET}\\n\")"
+ },
+ {
+  "repo": "stanford-oval/storm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "knowledge_storm/lm.py",
+  "line": 517,
+  "snippet": "response = self.client.chat.completions.create(",
+  "owasp": "LLM05",
+  "code_context": "     505|         ERRORS,\n     506|         max_time=1000,\n     507|         on_backoff=backoff_hdlr,\n     508|         giveup=giveup_hdlr,\n     509|     )\n     510|     def basic_request(self, prompt: str, **kwargs) -> Any:\n     511|         kwargs = {**self.kwargs, **kwargs}\n     512| \n     513|         try:\n     514|             if self.model_type == \"chat\":\n     515|                 messages = [{\"role\": \"user\", \"content\": prompt}]\n     516| \n>>   517|                 response = self.client.chat.completions.create(\n     518|                     messages=messages, **kwargs\n     519|                 )\n     520|             else:\n     521|                 response = self.client.completions.create(prompt=prompt, **kwargs)\n     522| \n     523|             self.log_usage(response)\n     524| \n     525|             history_entry = {\n     526|                 \"prompt\": prompt,\n     527|                 \"response\": dict(response),\n     528|                 \"kwargs\": kwargs,\n     529|             }"
+ },
+ {
+  "repo": "stanford-oval/storm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "knowledge_storm/lm.py",
+  "line": 521,
+  "snippet": "response = self.client.completions.create(prompt=prompt, **kwargs)",
+  "owasp": "LLM05",
+  "code_context": "     509|     )\n     510|     def basic_request(self, prompt: str, **kwargs) -> Any:\n     511|         kwargs = {**self.kwargs, **kwargs}\n     512| \n     513|         try:\n     514|             if self.model_type == \"chat\":\n     515|                 messages = [{\"role\": \"user\", \"content\": prompt}]\n     516| \n     517|                 response = self.client.chat.completions.create(\n     518|                     messages=messages, **kwargs\n     519|                 )\n     520|             else:\n>>   521|                 response = self.client.completions.create(prompt=prompt, **kwargs)\n     522| \n     523|             self.log_usage(response)\n     524| \n     525|             history_entry = {\n     526|                 \"prompt\": prompt,\n     527|                 \"response\": dict(response),\n     528|                 \"kwargs\": kwargs,\n     529|             }\n     530|             self.history.append(history_entry)\n     531| \n     532|             return response\n     533| "
+ },
+ {
+  "repo": "stanford-oval/storm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "knowledge_storm/lm.py",
+  "line": 776,
+  "snippet": "response = self.client.messages.create(**kwargs)",
+  "owasp": "LLM05",
+  "code_context": "     764|         }\n     765|         self.prompt_tokens = 0\n     766|         self.completion_tokens = 0\n     767| \n     768|         return usage\n     769| \n     770|     def basic_request(self, prompt: str, **kwargs):\n     771|         raw_kwargs = kwargs\n     772|         kwargs = {**self.kwargs, **kwargs}\n     773|         # caching mechanism requires hashable kwargs\n     774|         kwargs[\"messages\"] = [{\"role\": \"user\", \"content\": prompt}]\n     775|         kwargs.pop(\"n\")\n>>   776|         response = self.client.messages.create(**kwargs)\n     777|         # history = {\n     778|         #     \"prompt\": prompt,\n     779|         #     \"response\": response,\n     780|         #     \"kwargs\": kwargs,\n     781|         #     \"raw_kwargs\": raw_kwargs,\n     782|         # }\n     783|         json_serializable_history = {\n     784|             \"prompt\": prompt,\n     785|             \"response\": {\n     786|                 \"content\": response.content[0].text,\n     787|                 \"model\": response.model,\n     788|                 \"role\": response.role,"
+ },
+ {
+  "repo": "stanford-oval/storm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "knowledge_storm/lm.py",
+  "line": 874,
+  "snippet": "completion = self.client.chat.completions.create(",
+  "owasp": "LLM05",
+  "code_context": "     862|         # Store additional kwargs for the generate method.\n     863|         self.kwargs = {**self.kwargs, **kwargs}\n     864|         self.model = model\n     865|         self.base_url = f\"{url}:{port}/v1/\"\n     866|         if model_type == \"chat\":\n     867|             self.base_url += \"chat/\"\n     868|         self.client = OpenAI(base_url=self.base_url, api_key=api_key)\n     869|         self.prompt_tokens = 0\n     870|         self.completion_tokens = 0\n     871|         self._token_usage_lock = threading.Lock()\n     872| \n     873|     def basic_request(self, prompt, **kwargs):\n>>   874|         completion = self.client.chat.completions.create(\n     875|             **kwargs,\n     876|             messages=[{\"role\": \"user\", \"content\": prompt}],\n     877|         )\n     878|         return completion\n     879| \n     880|     @backoff.on_exception(\n     881|         backoff.expo,\n     882|         ERRORS,\n     883|         max_time=1000,\n     884|         on_backoff=backoff_hdlr,\n     885|     )\n     886|     def request(self, prompt: str, **kwargs):"
+ },
+ {
+  "repo": "stanford-oval/storm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "knowledge_storm/lm.py",
+  "line": 1241,
+  "snippet": "response = self.llm.generate_content(prompt, generation_config=kwargs)",
+  "owasp": "LLM05",
+  "code_context": "    1229|         return usage\n    1230| \n    1231|     def basic_request(self, prompt: str, **kwargs):\n    1232|         raw_kwargs = kwargs\n    1233|         kwargs = {\n    1234|             **self.kwargs,\n    1235|             **kwargs,\n    1236|         }\n    1237| \n    1238|         # Google disallows \"n\" arguments.\n    1239|         n = kwargs.pop(\"n\", None)\n    1240| \n>>  1241|         response = self.llm.generate_content(prompt, generation_config=kwargs)\n    1242| \n    1243|         history = {\n    1244|             \"prompt\": prompt,\n    1245|             \"response\": [response.to_dict()],\n    1246|             \"kwargs\": kwargs,\n    1247|             \"raw_kwargs\": raw_kwargs,\n    1248|         }\n    1249|         self.history.append(history)\n    1250| \n    1251|         return response\n    1252| \n    1253|     @backoff.on_exception("
+ },
+ {
+  "repo": "stanford-oval/storm",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "knowledge_storm/utils.py",
+  "line": 728,
+  "snippet": "prompt = f\"\"\"Here is a topic input into a knowledge curation engine that can write a Wikipedia-like article for the topic. Please judge whether it is appropriate or not for the engine to curate information for this topic based on English search engine. The following types of inputs are inappropriate:",
+  "owasp": "LLM01",
+  "code_context": "     716|         model=\"azure/gpt-4o-mini\",\n     717|         max_tokens=10,\n     718|         temperature=0.0,\n     719|         top_p=0.9,\n     720|     )\n     721| \n     722|     if len(user_input.split()) > 20:\n     723|         return \"The input is too long. Please make your input topic more concise!\"\n     724| \n     725|     if not re.match(r'^[a-zA-Z0-9\\s\\-\"\\,\\.?\\']*$', user_input):\n     726|         return \"The input contains invalid characters. The input should only contain a-z, A-Z, 0-9, space, -/\\\"/,./?/'.\"\n     727| \n>>   728|     prompt = f\"\"\"Here is a topic input into a knowledge curation engine that can write a Wikipedia-like article for the topic. Please judge whether it is appropriate or not for the engine to curate information for this topic based on English search engine. The following types of inputs are inappropriate:\n     729| 1. Inputs that may be related to illegal, harmful, violent, racist, or sexual purposes.\n     730| 2. Inputs that are given using languages other than English. Currently, the engine can only support English.\n     731| 3. Inputs that are related to personal experience or personal information. Currently, the engine can only use information from the search engine.\n     732| 4. Inputs that are not aimed at topic research or inquiry. For example, asks requiring detailed execution, such as calculations, programming, or specific service searches fall outside the engine's scope of capabilities.\n     733| If the topic is appropriate for the engine to process, output \"Yes.\"; otherwise, output \"No. The input violates reason [1/2/3/4]\".\n     734| User input: {user_input}\"\"\"\n     735|     reject_reason_info = {\n     736|         1: \"Sorry, this input may be related to sensitive topics. Please try another topic. \"\n     737|         \"(Our input filtering uses OpenAI GPT-4o-mini, which may result in false positives. \"\n     738|         \"We apologize for any inconvenience.)\",\n     739|         2: \"Sorry, the current engine can only support English. Please try another topic. \"\n     740|         \"(Our input filtering uses OpenAI GPT-4o-mini, which may result in false positives. \""
+ },
+ {
+  "repo": "stanford-oval/storm",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "knowledge_storm/utils.py",
+  "line": 777,
+  "snippet": "prompt = f\"\"\"",
+  "owasp": "LLM01",
+  "code_context": "     765|         return \"Sorry, the input is inappropriate. Please try another topic!\"\n     766|     return \"Approved\"\n     767| \n     768| \n     769| def purpose_appropriateness_check(user_input):\n     770|     my_openai_model = LitellmModel(\n     771|         model=\"azure/gpt-4o-mini\",\n     772|         max_tokens=10,\n     773|         temperature=0.0,\n     774|         top_p=0.9,\n     775|     )\n     776| \n>>   777|     prompt = f\"\"\"\n     778|     Here is a purpose input into a report generation engine that can create a long-form report on any topic of interest.\n     779|     Please judge whether the provided purpose is valid for using this service.\n     780|     Try to judge if given purpose is non-sense like random words or just try to get around the sanity check.\n     781|     You should not make the rule too strict.\n     782| \n     783|     If the purpose is valid, output \"Yes.\"; otherwise, output \"No\" followed by reason.\n     784|     User input: {user_input}\n     785|     \"\"\"\n     786|     try:\n     787|         response = my_openai_model(prompt)[0].replace(\"[\", \"\").replace(\"]\", \"\")\n     788|         if response.startswith(\"No\"):\n     789|             return \"Please provide a more detailed explanation on your purpose of requesting this article.\""
+ },
+ {
+  "repo": "deepset-ai/haystack",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "docs-website/src/components/CopyDropdown/index.tsx",
+  "line": 31,
+  "snippet": "{ name: 'ChatGPT', buildUrl: (prompt: string) => `https://chatgpt.com/?q=${encodeURIComponent(prompt)}` },",
+  "owasp": "LLM01",
+  "code_context": "      19|   </svg>\n      20| );\n      21| \n      22| const ExternalLinkIcon = () => (\n      23|   <svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      24|     <path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\" />\n      25|     <polyline points=\"15 3 21 3 21 9\" />\n      26|     <line x1=\"10\" y1=\"14\" x2=\"21\" y2=\"3\" />\n      27|   </svg>\n      28| );\n      29| \n      30| const AI_ASSISTANTS = [\n>>    31|   { name: 'ChatGPT', buildUrl: (prompt: string) => `https://chatgpt.com/?q=${encodeURIComponent(prompt)}` },\n      32|   { name: 'Claude', buildUrl: (prompt: string) => `https://claude.ai/new?q=${encodeURIComponent(prompt)}` },\n      33|   { name: 'Perplexity', buildUrl: (prompt: string) => `https://www.perplexity.ai/search?q=${encodeURIComponent(prompt)}` },\n      34| ];\n      35| \n      36| // Create and configure Turndown service\n      37| function createTurndownService(): TurndownService {\n      38|   const turndownService = new TurndownService({\n      39|     headingStyle: 'atx',\n      40|     codeBlockStyle: 'fenced',\n      41|     bulletListMarker: '-',\n      42|     emDelimiter: '*',\n      43|     strongDelimiter: '**',"
+ },
+ {
+  "repo": "deepset-ai/haystack",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "docs-website/src/components/CopyDropdown/index.tsx",
+  "line": 32,
+  "snippet": "{ name: 'Claude', buildUrl: (prompt: string) => `https://claude.ai/new?q=${encodeURIComponent(prompt)}` },",
+  "owasp": "LLM01",
+  "code_context": "      20| );\n      21| \n      22| const ExternalLinkIcon = () => (\n      23|   <svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      24|     <path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\" />\n      25|     <polyline points=\"15 3 21 3 21 9\" />\n      26|     <line x1=\"10\" y1=\"14\" x2=\"21\" y2=\"3\" />\n      27|   </svg>\n      28| );\n      29| \n      30| const AI_ASSISTANTS = [\n      31|   { name: 'ChatGPT', buildUrl: (prompt: string) => `https://chatgpt.com/?q=${encodeURIComponent(prompt)}` },\n>>    32|   { name: 'Claude', buildUrl: (prompt: string) => `https://claude.ai/new?q=${encodeURIComponent(prompt)}` },\n      33|   { name: 'Perplexity', buildUrl: (prompt: string) => `https://www.perplexity.ai/search?q=${encodeURIComponent(prompt)}` },\n      34| ];\n      35| \n      36| // Create and configure Turndown service\n      37| function createTurndownService(): TurndownService {\n      38|   const turndownService = new TurndownService({\n      39|     headingStyle: 'atx',\n      40|     codeBlockStyle: 'fenced',\n      41|     bulletListMarker: '-',\n      42|     emDelimiter: '*',\n      43|     strongDelimiter: '**',\n      44|   });"
+ },
+ {
+  "repo": "deepset-ai/haystack",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "docs-website/src/components/CopyDropdown/index.tsx",
+  "line": 33,
+  "snippet": "{ name: 'Perplexity', buildUrl: (prompt: string) => `https://www.perplexity.ai/search?q=${encodeURIComponent(prompt)}` },",
+  "owasp": "LLM01",
+  "code_context": "      21| \n      22| const ExternalLinkIcon = () => (\n      23|   <svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      24|     <path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\" />\n      25|     <polyline points=\"15 3 21 3 21 9\" />\n      26|     <line x1=\"10\" y1=\"14\" x2=\"21\" y2=\"3\" />\n      27|   </svg>\n      28| );\n      29| \n      30| const AI_ASSISTANTS = [\n      31|   { name: 'ChatGPT', buildUrl: (prompt: string) => `https://chatgpt.com/?q=${encodeURIComponent(prompt)}` },\n      32|   { name: 'Claude', buildUrl: (prompt: string) => `https://claude.ai/new?q=${encodeURIComponent(prompt)}` },\n>>    33|   { name: 'Perplexity', buildUrl: (prompt: string) => `https://www.perplexity.ai/search?q=${encodeURIComponent(prompt)}` },\n      34| ];\n      35| \n      36| // Create and configure Turndown service\n      37| function createTurndownService(): TurndownService {\n      38|   const turndownService = new TurndownService({\n      39|     headingStyle: 'atx',\n      40|     codeBlockStyle: 'fenced',\n      41|     bulletListMarker: '-',\n      42|     emDelimiter: '*',\n      43|     strongDelimiter: '**',\n      44|   });\n      45| "
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "config/vault.example.yaml",
+  "line": 20,
+  "snippet": "access_toke******************KEN\"",
+  "owasp": "LLM02",
+  "code_context": "       8| # 2. Get description for LLM understanding.\n       9| # >>> from metagpt.tools.libs.env import get_env_description\n      10| # >>> descriptions = await get_env_description\n      11| # >>> for k, desc in descriptions.items():\n      12| # >>>     print(f\"{key}:{desc}\")\n      13| # await get_env(key=\"access_token\", app_name=\"github\"):Get github access token\n      14| # await get_env(key=\"access_token\", app_name=\"gitlab\"):Get gitlab access token\n      15| # ...\n      16| \n      17| vault:\n      18|   github:\n      19|     values:\n>>    20|       access_token: \"YOUR_ACCESS_TOKEN\"\n      21|     descriptions:\n      22|       access_token: \"Get github access token\"\n      23|   gitlab:\n      24|     values:\n      25|       access_token: \"YOUR_ACCESS_TOKEN\"\n      26|     descriptions:\n      27|       access_token: \"Get gitlab access token\"\n      28|   iflytek_tts:\n      29|     values:\n      30|       api_id: \"YOUR_APP_ID\"\n      31|       api_key: \"YOUR_API_KEY\"\n      32|       api_secret: \"YOUR_API_SECRET\""
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "config/vault.example.yaml",
+  "line": 25,
+  "snippet": "access_toke******************KEN\"",
+  "owasp": "LLM02",
+  "code_context": "      13| # await get_env(key=\"access_token\", app_name=\"github\"):Get github access token\n      14| # await get_env(key=\"access_token\", app_name=\"gitlab\"):Get gitlab access token\n      15| # ...\n      16| \n      17| vault:\n      18|   github:\n      19|     values:\n      20|       access_token: \"YOUR_ACCESS_TOKEN\"\n      21|     descriptions:\n      22|       access_token: \"Get github access token\"\n      23|   gitlab:\n      24|     values:\n>>    25|       access_token: \"YOUR_ACCESS_TOKEN\"\n      26|     descriptions:\n      27|       access_token: \"Get gitlab access token\"\n      28|   iflytek_tts:\n      29|     values:\n      30|       api_id: \"YOUR_APP_ID\"\n      31|       api_key: \"YOUR_API_KEY\"\n      32|       api_secret: \"YOUR_API_SECRET\"\n      33|     descriptions:\n      34|       api_id: \"Get the API ID of IFlyTek Text to Speech\"\n      35|       api_key: \"Get the API KEY of IFlyTek Text to Speech\"\n      36|       api_secret: \"Get the API SECRET of IFlyTek Text to Speech\"\n      37|   azure_tts:"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "examples/di/email_summary.py",
+  "line": 21,
+  "snippet": "prompt = f\"\"\"I will give you your Outlook email account ({email_account}) and password (email_password item in the environment variable).",
+  "owasp": "LLM01",
+  "code_context": "       9| from metagpt.roles.di.data_interpreter import DataInterpreter\n      10| \n      11| \n      12| async def main():\n      13|     email_account = \"your_email_account\"\n      14|     # your password will stay only on your device and not go to LLM api\n      15|     os.environ[\"email_password\"] = \"your_email_password\"\n      16| \n      17|     ### Prompt for automatic email reply, uncomment to try this too ###\n      18|     # prompt = f\"\"\"I will give you your Outlook email account ({email_account}) and password (email_password item in the environment variable). You need to find the latest email in my inbox with the sender's suffix @gmail.com and reply \"Thank you! I have received your email~\"\"\"\"\"\n      19| \n      20|     ### Prompt for automatic email summary ###\n>>    21|     prompt = f\"\"\"I will give you your Outlook email account ({email_account}) and password (email_password item in the environment variable).\n      22|             Firstly, Please help me fetch the latest 5 senders and full letter contents.\n      23|             Then, summarize each of the 5 emails into one sentence (you can do this by yourself, no need to import other models to do this) and output them in a markdown format.\"\"\"\n      24| \n      25|     di = DataInterpreter()\n      26| \n      27|     await di.run(prompt)\n      28| \n      29| \n      30| if __name__ == \"__main__\":\n      31|     import asyncio\n      32| \n      33|     asyncio.run(main())"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "examples/di/InfiAgent-DABench/run_InfiAgent-DABench.py",
+  "line": 25,
+  "snippet": "result = await agent.run(requirement)",
+  "owasp": "LLM05",
+  "code_context": "      13|     This function runs the agent with the provided requirement and extracts the prediction\n      14|     from the result. If an error occurs during processing, it logs the error and returns None.\n      15| \n      16|     Args:\n      17|         agent: The agent instance used to generate predictions.\n      18|         requirement: The input requirement for which the prediction is to be made.\n      19| \n      20|     Returns:\n      21|         The predicted result if successful, otherwise None.\n      22|     \"\"\"\n      23|     try:\n      24|         # Run the agent with the given requirement and await the result\n>>    25|         result = await agent.run(requirement)\n      26| \n      27|         # Parse the result to extract the prediction from the JSON response\n      28|         prediction_json = json.loads(str(result).split(\"Current Plan\")[1].split(\"## Current Task\")[0])\n      29|         prediction = prediction_json[-1][\"result\"]  # Extract the last result from the parsed JSON\n      30| \n      31|         return prediction  # Return the extracted prediction\n      32|     except Exception as e:\n      33|         # Log an error message if an exception occurs during processing\n      34|         logger.info(f\"Error processing requirement: {requirement}. Error: {e}\")\n      35|         return None  # Return None in case of an error\n      36| \n      37| "
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "metagpt/provider/ark_api.py",
+  "line": 75,
+  "snippet": "response: AsyncStream[ChatCompletionChunk] = await self.aclient.chat.completions.create(",
+  "owasp": "LLM05",
+  "code_context": "      63| \n      64|         return kwargs\n      65| \n      66|     def _update_costs(self, usage: Union[dict, BaseModel], model: str = None, local_calc_usage: bool = True):\n      67|         if next(iter(DOUBAO_TOKEN_COSTS)) not in self.cost_manager.token_costs:\n      68|             self.cost_manager.token_costs.update(DOUBAO_TOKEN_COSTS)\n      69|         if model in self.cost_manager.token_costs:\n      70|             self.pricing_plan = model\n      71|         if self.pricing_plan in self.cost_manager.token_costs:\n      72|             super()._update_costs(usage, self.pricing_plan, local_calc_usage)\n      73| \n      74|     async def _achat_completion_stream(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT) -> str:\n>>    75|         response: AsyncStream[ChatCompletionChunk] = await self.aclient.chat.completions.create(\n      76|             **self._cons_kwargs(messages, timeout=self.get_timeout(timeout)),\n      77|             stream=True,\n      78|             extra_body={\"stream_options\": {\"include_usage\": True}},  # \u53ea\u6709\u589e\u52a0\u8fd9\u4e2a\u53c2\u6570\u624d\u4f1a\u5728\u6d41\u5f0f\u65f6\u6700\u540e\u8fd4\u56deusage\n      79|         )\n      80|         usage = None\n      81|         collected_messages = []\n      82|         async for chunk in response:\n      83|             chunk_message = chunk.choices[0].delta.content or \"\" if chunk.choices else \"\"  # extract the message\n      84|             log_llm_stream(chunk_message)\n      85|             collected_messages.append(chunk_message)\n      86|             if chunk.usage:\n      87|                 # \u706b\u5c71\u65b9\u821f\u7684\u6d41\u5f0f\u8c03\u7528\u4f1a\u5728\u6700\u540e\u4e00\u4e2achunk\u4e2d\u8fd4\u56deusage,\u6700\u540e\u4e00\u4e2achunk\u7684choices\u4e3a[]"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "metagpt/provider/ark_api.py",
+  "line": 97,
+  "snippet": "rsp: ChatCompletion = await self.aclient.chat.completions.create(**kwargs)",
+  "owasp": "LLM05",
+  "code_context": "      85|             collected_messages.append(chunk_message)\n      86|             if chunk.usage:\n      87|                 # \u706b\u5c71\u65b9\u821f\u7684\u6d41\u5f0f\u8c03\u7528\u4f1a\u5728\u6700\u540e\u4e00\u4e2achunk\u4e2d\u8fd4\u56deusage,\u6700\u540e\u4e00\u4e2achunk\u7684choices\u4e3a[]\n      88|                 usage = chunk.usage\n      89| \n      90|         log_llm_stream(\"\\n\")\n      91|         full_reply_content = \"\".join(collected_messages)\n      92|         self._update_costs(usage, chunk.model)\n      93|         return full_reply_content\n      94| \n      95|     async def _achat_completion(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT) -> ChatCompletion:\n      96|         kwargs = self._cons_kwargs(messages, timeout=self.get_timeout(timeout))\n>>    97|         rsp: ChatCompletion = await self.aclient.chat.completions.create(**kwargs)\n      98|         self._update_costs(rsp.usage, rsp.model)\n      99|         return rsp"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "metagpt/provider/zhipuai_api.py",
+  "line": 58,
+  "snippet": "resp: Completion = self.llm.chat.completions.create(**self._const_kwargs(messages))",
+  "owasp": "LLM05",
+  "code_context": "      46|         max_tokens = self.config.max_token if self.config.max_token > 0 else 1024\n      47|         temperature = self.config.temperature if self.config.temperature > 0.0 else 0.3\n      48|         kwargs = {\n      49|             \"model\": self.model,\n      50|             \"max_tokens\": max_tokens,\n      51|             \"messages\": messages,\n      52|             \"stream\": stream,\n      53|             \"temperature\": temperature,\n      54|         }\n      55|         return kwargs\n      56| \n      57|     def completion(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT) -> dict:\n>>    58|         resp: Completion = self.llm.chat.completions.create(**self._const_kwargs(messages))\n      59|         usage = resp.usage.model_dump()\n      60|         self._update_costs(usage)\n      61|         return resp.model_dump()\n      62| \n      63|     async def _achat_completion(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT) -> dict:\n      64|         resp = await self.llm.acreate(**self._const_kwargs(messages))\n      65|         usage = resp.get(\"usage\", {})\n      66|         self._update_costs(usage)\n      67|         return resp\n      68| \n      69|     async def acompletion(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT) -> dict:\n      70|         return await self._achat_completion(messages, timeout=self.get_timeout(timeout))"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "metagpt/provider/anthropic_api.py",
+  "line": 53,
+  "snippet": "resp: Message = await self.aclient.messages.create(**self._const_kwargs(messages))",
+  "owasp": "LLM05",
+  "code_context": "      41|         usage = {\"prompt_tokens\": usage.input_tokens, \"completion_tokens\": usage.output_tokens}\n      42|         super()._update_costs(usage, model)\n      43| \n      44|     def get_choice_text(self, resp: Message) -> str:\n      45|         if len(resp.content) > 1:\n      46|             self.reasoning_content = resp.content[0].thinking\n      47|             text = resp.content[1].text\n      48|         else:\n      49|             text = resp.content[0].text\n      50|         return text\n      51| \n      52|     async def _achat_completion(self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT) -> Message:\n>>    53|         resp: Message = await self.aclient.messages.create(**self._const_kwargs(messages))\n      54|         self._update_costs(resp.usage, self.model)\n      55|         return resp\n      56| \n      57|     async def acompletion(self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT) -> Message:\n      58|         return await self._achat_completion(messages, timeout=self.get_timeout(timeout))\n      59| \n      60|     async def _achat_completion_stream(self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT) -> str:\n      61|         stream = await self.aclient.messages.create(**self._const_kwargs(messages, stream=True))\n      62|         collected_content = []\n      63|         collected_reasoning_content = []\n      64|         usage = Usage(input_tokens=0, output_tokens=0)\n      65|         async for event in stream:"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "metagpt/provider/anthropic_api.py",
+  "line": 61,
+  "snippet": "stream = await self.aclient.messages.create(**self._const_kwargs(messages, stream=True))",
+  "owasp": "LLM05",
+  "code_context": "      49|             text = resp.content[0].text\n      50|         return text\n      51| \n      52|     async def _achat_completion(self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT) -> Message:\n      53|         resp: Message = await self.aclient.messages.create(**self._const_kwargs(messages))\n      54|         self._update_costs(resp.usage, self.model)\n      55|         return resp\n      56| \n      57|     async def acompletion(self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT) -> Message:\n      58|         return await self._achat_completion(messages, timeout=self.get_timeout(timeout))\n      59| \n      60|     async def _achat_completion_stream(self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT) -> str:\n>>    61|         stream = await self.aclient.messages.create(**self._const_kwargs(messages, stream=True))\n      62|         collected_content = []\n      63|         collected_reasoning_content = []\n      64|         usage = Usage(input_tokens=0, output_tokens=0)\n      65|         async for event in stream:\n      66|             event_type = event.type\n      67|             if event_type == \"message_start\":\n      68|                 usage.input_tokens = event.message.usage.input_tokens\n      69|                 usage.output_tokens = event.message.usage.output_tokens\n      70|             elif event_type == \"content_block_delta\":\n      71|                 delta_type = event.delta.type\n      72|                 if delta_type == \"thinking_delta\":\n      73|                     collected_reasoning_content.append(event.delta.thinking)"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "metagpt/provider/google_gemini_api.py",
+  "line": 123,
+  "snippet": "resp: GenerateContentResponse = self.llm.generate_content(**self._const_kwargs(messages))",
+  "owasp": "LLM05",
+  "code_context": "     111|         completion_resp = self.llm.count_tokens(contents={\"role\": \"model\", \"parts\": [{\"text\": resp_text}]})\n     112|         usage = {\"prompt_tokens\": prompt_resp.total_tokens, \"completion_tokens\": completion_resp.total_tokens}\n     113|         return usage\n     114| \n     115|     async def aget_usage(self, messages: list[dict], resp_text: str) -> dict:\n     116|         req_text = messages[-1][\"parts\"][0] if messages else \"\"\n     117|         prompt_resp = await self.llm.count_tokens_async(contents={\"role\": \"user\", \"parts\": [{\"text\": req_text}]})\n     118|         completion_resp = await self.llm.count_tokens_async(contents={\"role\": \"model\", \"parts\": [{\"text\": resp_text}]})\n     119|         usage = {\"prompt_tokens\": prompt_resp.total_tokens, \"completion_tokens\": completion_resp.total_tokens}\n     120|         return usage\n     121| \n     122|     def completion(self, messages: list[dict]) -> \"GenerateContentResponse\":\n>>   123|         resp: GenerateContentResponse = self.llm.generate_content(**self._const_kwargs(messages))\n     124|         usage = self.get_usage(messages, resp.text)\n     125|         self._update_costs(usage)\n     126|         return resp\n     127| \n     128|     async def _achat_completion(\n     129|         self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT\n     130|     ) -> \"AsyncGenerateContentResponse\":\n     131|         resp: AsyncGenerateContentResponse = await self.llm.generate_content_async(**self._const_kwargs(messages))\n     132|         usage = await self.aget_usage(messages, resp.text)\n     133|         self._update_costs(usage)\n     134|         return resp\n     135| "
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "metagpt/provider/google_gemini_api.py",
+  "line": 131,
+  "snippet": "resp: AsyncGenerateContentResponse = await self.llm.generate_content_async(**self._const_kwargs(messages))",
+  "owasp": "LLM05",
+  "code_context": "     119|         usage = {\"prompt_tokens\": prompt_resp.total_tokens, \"completion_tokens\": completion_resp.total_tokens}\n     120|         return usage\n     121| \n     122|     def completion(self, messages: list[dict]) -> \"GenerateContentResponse\":\n     123|         resp: GenerateContentResponse = self.llm.generate_content(**self._const_kwargs(messages))\n     124|         usage = self.get_usage(messages, resp.text)\n     125|         self._update_costs(usage)\n     126|         return resp\n     127| \n     128|     async def _achat_completion(\n     129|         self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT\n     130|     ) -> \"AsyncGenerateContentResponse\":\n>>   131|         resp: AsyncGenerateContentResponse = await self.llm.generate_content_async(**self._const_kwargs(messages))\n     132|         usage = await self.aget_usage(messages, resp.text)\n     133|         self._update_costs(usage)\n     134|         return resp\n     135| \n     136|     async def acompletion(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT) -> dict:\n     137|         return await self._achat_completion(messages, timeout=self.get_timeout(timeout))\n     138| \n     139|     async def _achat_completion_stream(self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT) -> str:\n     140|         resp: AsyncGenerateContentResponse = await self.llm.generate_content_async(\n     141|             **self._const_kwargs(messages, stream=True)\n     142|         )\n     143|         collected_content = []"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "metagpt/actions/import_repo.py",
+  "line": 205,
+  "snippet": "prompt = file_list + \"\\n---\\n\" + usage",
+  "owasp": "LLM01",
+  "code_context": "     193|         if len(entries) == 1:\n     194|             return entries[0]\n     195| \n     196|         file_list = \"## File List\\n\"\n     197|         file_list += \"\\n\".join([f\"- {i}\" for i in entries])\n     198| \n     199|         rows = await self.graph_db.select(predicate=GraphKeyword.HAS_USAGE)\n     200|         usage = \"## Usage\\n\"\n     201|         for r in rows:\n     202|             if Path(r.subject).stem == \"README\":\n     203|                 usage += r.object_\n     204| \n>>   205|         prompt = file_list + \"\\n---\\n\" + usage\n     206|         rsp = await self.llm.aask(\n     207|             prompt,\n     208|             system_msgs=[\n     209|                 'You are a tool to choose the source file path from \"File List\" which is used in \"Usage\".',\n     210|                 'You choose the source file path based on the name of file and the class name and package name used in \"Usage\".',\n     211|                 \"Return a markdown JSON object containing:\\n\"\n     212|                 '- a \"filename\" field containing the chosen source file path from \"File List\" which is used in \"Usage\";\\n'\n     213|                 '- a \"reason\" field explaining why.',\n     214|             ],\n     215|             stream=False,\n     216|         )\n     217|         logger.debug(rsp)"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "metagpt/actions/write_code_review.py",
+  "line": 160,
+  "snippet": "rewrite_prompt = f\"{context_prompt}\\n{cr_rsp}\\n{REWRITE_CODE_TEMPLATE.format(filename=filename)}\"",
+  "owasp": "LLM01",
+  "code_context": "     148|     async def write_code_review_and_rewrite(self, context_prompt, cr_prompt, doc):\n     149|         filename = doc.filename\n     150|         cr_rsp = await self._aask(context_prompt + cr_prompt)\n     151|         result = CodeParser.parse_block(\"Code Review Result\", cr_rsp)\n     152|         if \"LGTM\" in result:\n     153|             return result, None\n     154| \n     155|         # if LBTM, rewrite code\n     156|         async with EditorReporter(enable_llm_stream=True) as reporter:\n     157|             await reporter.async_report(\n     158|                 {\"type\": \"code\", \"filename\": filename, \"src_path\": doc.root_relative_path}, \"meta\"\n     159|             )\n>>   160|             rewrite_prompt = f\"{context_prompt}\\n{cr_rsp}\\n{REWRITE_CODE_TEMPLATE.format(filename=filename)}\"\n     161|             code_rsp = await self._aask(rewrite_prompt)\n     162|             code = CodeParser.parse_code(text=code_rsp)\n     163|             doc.content = code\n     164|             await reporter.async_report(doc, \"document\")\n     165|         return result, code\n     166| \n     167|     async def run(self, *args, **kwargs) -> CodingContext:\n     168|         iterative_code = self.i_context.code_doc.content\n     169|         k = self.context.config.code_validate_k_times or 1\n     170| \n     171|         for i in range(k):\n     172|             format_example = FORMAT_EXAMPLE.format(filename=self.i_context.code_doc.filename)"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "metagpt/actions/di/ask_review.py",
+  "line": 46,
+  "snippet": "prompt = (",
+  "owasp": "LLM01",
+  "code_context": "      34|                 \"\\n\".join(\n      35|                     [f\"{task.task_id}: {task.instruction}, is_finished: {task.is_finished}\" for task in plan.tasks]\n      36|                 )\n      37|             )\n      38| \n      39|         logger.info(\"Most recent context:\")\n      40|         latest_action = context[-1].cause_by if context and context[-1].cause_by else \"\"\n      41|         review_instruction = (\n      42|             ReviewConst.TASK_REVIEW_INSTRUCTION\n      43|             if trigger == ReviewConst.TASK_REVIEW_TRIGGER\n      44|             else ReviewConst.CODE_REVIEW_INSTRUCTION\n      45|         )\n>>    46|         prompt = (\n      47|             f\"This is a <{trigger}> review. Please review output from {latest_action}\\n\"\n      48|             f\"{review_instruction}\\n\"\n      49|             f\"{ReviewConst.EXIT_INSTRUCTION}\\n\"\n      50|             \"Please type your review below:\\n\"\n      51|         )\n      52| \n      53|         rsp = await get_human_input(prompt)\n      54| \n      55|         if rsp.lower() in ReviewConst.EXIT_WORDS:\n      56|             exit()\n      57| \n      58|         # Confirmation can be one of \"confirm\", \"continue\", \"c\", \"yes\", \"y\" exactly, or sentences containing \"confirm\"."
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "metagpt/configs/compress_msg_config.py",
+  "line": 16,
+  "snippet": "POST_CUT_BY_TOKE*******************ken\"",
+  "owasp": "LLM02",
+  "code_context": "       4| class CompressType(Enum):\n       5|     \"\"\"\n       6|     Compression Type for messages. Used to compress messages under token limit.\n       7|     - \"\": No compression. Default value.\n       8|     - \"post_cut_by_msg\": Keep as many latest messages as possible.\n       9|     - \"post_cut_by_token\": Keep as many latest messages as possible and truncate the earliest fit-in message.\n      10|     - \"pre_cut_by_msg\": Keep as many earliest messages as possible.\n      11|     - \"pre_cut_by_token\": Keep as many earliest messages as possible and truncate the latest fit-in message.\n      12|     \"\"\"\n      13| \n      14|     NO_COMPRESS = \"\"\n      15|     POST_CUT_BY_MSG = \"post_cut_by_msg\"\n>>    16|     POST_CUT_BY_TOKEN = \"post_cut_by_token\"\n      17|     PRE_CUT_BY_MSG = \"pre_cut_by_msg\"\n      18|     PRE_CUT_BY_TOKEN = \"pre_cut_by_token\"\n      19| \n      20|     def __missing__(self, key):\n      21|         return self.NO_COMPRESS\n      22| \n      23|     @classmethod\n      24|     def get_type(cls, type_name):\n      25|         for member in cls:\n      26|             if member.value == type_name:\n      27|                 return member\n      28|         return cls.NO_COMPRESS"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "metagpt/configs/compress_msg_config.py",
+  "line": 18,
+  "snippet": "PRE_CUT_BY_TOKE******************ken\"",
+  "owasp": "LLM02",
+  "code_context": "       6|     Compression Type for messages. Used to compress messages under token limit.\n       7|     - \"\": No compression. Default value.\n       8|     - \"post_cut_by_msg\": Keep as many latest messages as possible.\n       9|     - \"post_cut_by_token\": Keep as many latest messages as possible and truncate the earliest fit-in message.\n      10|     - \"pre_cut_by_msg\": Keep as many earliest messages as possible.\n      11|     - \"pre_cut_by_token\": Keep as many earliest messages as possible and truncate the latest fit-in message.\n      12|     \"\"\"\n      13| \n      14|     NO_COMPRESS = \"\"\n      15|     POST_CUT_BY_MSG = \"post_cut_by_msg\"\n      16|     POST_CUT_BY_TOKEN = \"post_cut_by_token\"\n      17|     PRE_CUT_BY_MSG = \"pre_cut_by_msg\"\n>>    18|     PRE_CUT_BY_TOKEN = \"pre_cut_by_token\"\n      19| \n      20|     def __missing__(self, key):\n      21|         return self.NO_COMPRESS\n      22| \n      23|     @classmethod\n      24|     def get_type(cls, type_name):\n      25|         for member in cls:\n      26|             if member.value == type_name:\n      27|                 return member\n      28|         return cls.NO_COMPRESS\n      29| \n      30|     @classmethod"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "metagpt/ext/stanford_town/actions/st_action.py",
+  "line": 83,
+  "snippet": "prompt = '\"\"\"\\n' + prompt + '\\n\"\"\"\\n'",
+  "owasp": "LLM01",
+  "code_context": "      71|                 logger.info(f\"Action: {self.cls_name} llm _run_gpt35_max_tokens raw resp: {llm_resp}\")\n      72|                 if self._func_validate(llm_resp, prompt):\n      73|                     return self._func_cleanup(llm_resp, prompt)\n      74|             except Exception as exp:\n      75|                 logger.warning(f\"Action: {self.cls_name} _run_gpt35_max_tokens exp: {exp}\")\n      76|                 time.sleep(5)\n      77|         return self.fail_default_resp\n      78| \n      79|     async def _run_gpt35(\n      80|         self, prompt: str, example_output: str, special_instruction: str, retry: int = 3\n      81|     ) -> Union[bool, Any]:\n      82|         \"\"\"same with `gpt_structure.ChatGPT_safe_generate_response`\"\"\"\n>>    83|         prompt = '\"\"\"\\n' + prompt + '\\n\"\"\"\\n'\n      84|         prompt += f\"Output the response to the prompt above in json. {special_instruction}\\n\"\n      85|         prompt += \"Example output json:\\n\"\n      86|         prompt += '{\"output\": \"' + str(example_output) + '\"}'\n      87| \n      88|         for idx in range(retry):\n      89|             try:\n      90|                 llm_resp = await self._aask(prompt)\n      91|                 logger.info(f\"Action: {self.cls_name} llm _run_gpt35 raw resp: {llm_resp}\")\n      92|                 end_idx = llm_resp.strip().rfind(\"}\") + 1\n      93|                 llm_resp = llm_resp[:end_idx]\n      94|                 llm_resp = json.loads(llm_resp)[\"output\"]\n      95| "
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "metagpt/ext/werewolf/roles/human_player.py",
+  "line": 13,
+  "snippet": "input_instruction = f\"\"\"",
+  "owasp": "LLM01",
+  "code_context": "       1| from metagpt.environment.werewolf.const import RoleType\n       2| from metagpt.ext.werewolf.actions import Speak\n       3| from metagpt.ext.werewolf.roles import BasePlayer\n       4| from metagpt.ext.werewolf.schema import WwMessage\n       5| from metagpt.logs import logger\n       6| \n       7| \n       8| async def _act(self):\n       9|     todo = self.rc.todo\n      10| \n      11|     memories = self.get_all_memories()\n      12| \n>>    13|     input_instruction = f\"\"\"\n      14|     ## As a reminder, you have access to the following game history:\n      15|     {memories}\n      16|     ## You are {self.name}({self.profile})\n      17|     ## Guidance:\n      18|     1. If you are performing a special action or exercising a vote,\n      19|     end your response with \"PlayerX\", replace PlayerX with the actual player name, e.g., \"..., kill/protect/poison/.../vote Player1\".\n      20|     2. If it is a daytime free speech, you can speak in whatever format.\n      21|     Now, please speak:\n      22|     \"\"\"\n      23|     rsp = input(input_instruction)  # wait for human input\n      24| \n      25|     msg_cause_by = type(todo)"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "metagpt/ext/aflow/scripts/operator.py",
+  "line": 67,
+  "snippet": "prompt = instruction + input",
+  "owasp": "LLM01",
+  "code_context": "      55|         if mode:\n      56|             fill_kwargs[\"mode\"] = mode\n      57|         fill_kwargs.update(extra_kwargs)\n      58|         node = await ActionNode.from_pydantic(op_class).fill(**fill_kwargs)\n      59|         return node.instruct_content.model_dump()\n      60| \n      61| \n      62| class Custom(Operator):\n      63|     def __init__(self, llm: LLM, name: str = \"Custom\"):\n      64|         super().__init__(llm, name)\n      65| \n      66|     async def __call__(self, input, instruction):\n>>    67|         prompt = instruction + input\n      68|         response = await self._fill_node(GenerateOp, prompt, mode=\"single_fill\")\n      69|         return response\n      70| \n      71| \n      72| class AnswerGenerate(Operator):\n      73|     def __init__(self, llm: LLM, name: str = \"AnswerGenerate\"):\n      74|         super().__init__(llm, name)\n      75| \n      76|     async def __call__(self, input: str, mode: str = None) -> Tuple[str, str]:\n      77|         prompt = ANSWER_GENERATION_PROMPT.format(input=input)\n      78|         response = await self._fill_node(AnswerGenerateOp, prompt, mode=\"xml_fill\")\n      79|         return response"
+ },
+ {
+  "repo": "geekan/MetaGPT",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "metagpt/memory/brain_memory.py",
+  "line": 235,
+  "snippet": "prompt = f\"## Context\\n{context}\\n---\\n## Sentence\\n{sentence}\\n\"",
+  "owasp": "LLM01",
+  "code_context": "     223| \n     224|     async def rewrite(self, sentence: str, context: str, llm):\n     225|         if isinstance(llm, MetaGPTLLM):\n     226|             return await self._metagpt_rewrite(sentence=sentence, context=context, llm=llm)\n     227|         return await self._openai_rewrite(sentence=sentence, context=context, llm=llm)\n     228| \n     229|     @staticmethod\n     230|     async def _metagpt_rewrite(sentence: str, **kwargs):\n     231|         return sentence\n     232| \n     233|     @staticmethod\n     234|     async def _openai_rewrite(sentence: str, context: str, llm):\n>>   235|         prompt = f\"## Context\\n{context}\\n---\\n## Sentence\\n{sentence}\\n\"\n     236|         rsp = await llm.aask(\n     237|             msg=prompt,\n     238|             system_msgs=[\n     239|                 'You are a tool augmenting the \"Sentence\" with information from the \"Context\".',\n     240|                 \"Do not supplement the context with information that is not present, especially regarding the subject and object.\",\n     241|                 \"Return the augmented sentence.\",\n     242|             ],\n     243|             stream=False,\n     244|         )\n     245|         logger.info(f\"REWRITE:\\nCommand: {prompt}\\nRESULT: {rsp}\\n\")\n     246|         return rsp\n     247| "
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "libs/langchain-mcp-adapters/examples/firecrawl_custom_config_example.ts",
+  "line": 79,
+  "snippet": "const result = await agent.invoke({",
+  "owasp": "LLM05",
+  "code_context": "      67|     const agent = createAgent({\n      68|       model,\n      69|       tools: firecrawlTools,\n      70|     });\n      71| \n      72|     // Define a query for testing Firecrawl\n      73|     const query =\n      74|       \"Find the latest news about artificial intelligence and summarize the top 3 stories\";\n      75| \n      76|     console.log(`Running agent with query: ${query}`);\n      77| \n      78|     // Run the agent\n>>    79|     const result = await agent.invoke({\n      80|       messages: [new HumanMessage(query)],\n      81|     });\n      82| \n      83|     console.log(\"Agent execution completed\");\n      84|     console.log(\"\\nFinal output:\");\n      85|     console.log(result);\n      86| \n      87|     // Clear the timeout since the example completed successfully\n      88|     clearTimeout(timeout);\n      89|   } catch (error) {\n      90|     console.error(\"Error in example:\", error);\n      91|   } finally {"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "libs/langchain-mcp-adapters/examples/filesystem_langgraph_example.ts",
+  "line": 130,
+  "snippet": "const response = await model.invoke(messages);",
+  "owasp": "LLM05",
+  "code_context": "     118|     console.log(\"\\n=== CREATING LANGGRAPH AGENT FLOW ===\");\n     119| \n     120|     // Define the function that calls the model\n     121|     const llmNode = async (state: typeof MessagesAnnotation.State) => {\n     122|       console.log(`Calling LLM with ${state.messages.length} messages`);\n     123| \n     124|       // Add system message if it's the first call\n     125|       let { messages } = state;\n     126|       if (messages.length === 1 && HumanMessage.isInstance(messages[0])) {\n     127|         messages = [new SystemMessage(systemMessage), ...messages];\n     128|       }\n     129| \n>>   130|       const response = await model.invoke(messages);\n     131|       return { messages: [response] };\n     132|     };\n     133| \n     134|     // Create a new graph with MessagesAnnotation\n     135|     const workflow = new StateGraph(MessagesAnnotation)\n     136| \n     137|       // Add the nodes to the graph\n     138|       .addNode(\"llm\", llmNode)\n     139|       .addNode(\"tools\", toolNode)\n     140| \n     141|       // Add edges - these define how nodes are connected\n     142|       .addEdge(START, \"llm\")"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "libs/langchain-mcp-adapters/examples/firecrawl_multiple_servers_example.ts",
+  "line": 103,
+  "snippet": "const result = await agent.invoke({",
+  "owasp": "LLM05",
+  "code_context": "      91|       \"What is 25 multiplied by 18?\",\n      92|       \"Scrape the content from https://example.com and count how many paragraphs are there\",\n      93|       \"If I have 42 items and each costs $7.50, what is the total cost?\",\n      94|     ];\n      95| \n      96|     // Test the agent with the queries\n      97|     console.log(\"\\n=== RUNNING REACT AGENT ===\");\n      98| \n      99|     for (const query of queries) {\n     100|       console.log(`\\nQuery: ${query}`);\n     101| \n     102|       // Run the agent with the query\n>>   103|       const result = await agent.invoke({\n     104|         messages: [new HumanMessage(query)],\n     105|       });\n     106| \n     107|       // Display the final response\n     108|       const finalMessage = result.messages[result.messages.length - 1];\n     109|       console.log(`\\nResult: ${finalMessage.content}`);\n     110|     }\n     111|   } catch (error) {\n     112|     console.error(\"Error:\", error);\n     113|     process.exit(1); // Exit with error code\n     114|   } finally {\n     115|     // Close all client connections"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "libs/langchain-mcp-adapters/examples/langgraph_example.ts",
+  "line": 102,
+  "snippet": "const response = await model.invoke(state.messages);",
+  "owasp": "LLM05",
+  "code_context": "      90| \n      91|     /**\n      92|      * MessagesAnnotation provides a built-in state schema for handling chat messages.\n      93|      * It includes a reducer function that automatically:\n      94|      * - Appends new messages to the history\n      95|      * - Properly merges message lists\n      96|      * - Handles message ID-based deduplication\n      97|      */\n      98| \n      99|     // Define the function that calls the model\n     100|     const llmNode = async (state: typeof MessagesAnnotation.State) => {\n     101|       console.log(\"Calling LLM with messages:\", state.messages.length);\n>>   102|       const response = await model.invoke(state.messages);\n     103|       return { messages: [response] };\n     104|     };\n     105| \n     106|     // Create a new graph with MessagesAnnotation\n     107|     const workflow = new StateGraph(MessagesAnnotation)\n     108| \n     109|       // Add the nodes to the graph\n     110|       .addNode(\"llm\", llmNode)\n     111|       .addNode(\"tools\", toolNode)\n     112| \n     113|       // Add edges - these define how nodes are connected\n     114|       // START -> llm: Entry point to the graph"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "libs/langchain-mcp-adapters/examples/calculator_sse_shttp_example.ts",
+  "line": 109,
+  "snippet": "const response = await model.invoke(messages);",
+  "owasp": "LLM05",
+  "code_context": "      97|     console.log(\"\\n=== CREATING LANGGRAPH AGENT FLOW ===\");\n      98| \n      99|     // Define the function that calls the model\n     100|     const llmNode = async (state: typeof MessagesAnnotation.State) => {\n     101|       console.log(`Calling LLM with ${state.messages.length} messages`);\n     102| \n     103|       // Add system message if it's the first call\n     104|       let { messages } = state;\n     105|       if (messages.length === 1 && HumanMessage.isInstance(messages[0])) {\n     106|         messages = [new SystemMessage(systemMessage), ...messages];\n     107|       }\n     108| \n>>   109|       const response = await model.invoke(messages);\n     110|       return { messages: [response] };\n     111|     };\n     112| \n     113|     // Create a new graph with MessagesAnnotation\n     114|     const workflow = new StateGraph(MessagesAnnotation)\n     115| \n     116|       // Add the nodes to the graph\n     117|       .addNode(\"llm\", llmNode)\n     118|       .addNode(\"tools\", toolNode)\n     119| \n     120|       // Add edges - these define how nodes are connected\n     121|       .addEdge(START, \"llm\")"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "libs/providers/langchain-together-ai/src/embeddings.ts",
+  "line": 76,
+  "snippet": "apiK*********************KEY\",",
+  "owasp": "LLM02",
+  "code_context": "      64|   apiKey: string;\n      65| \n      66|   batchSize = 512;\n      67| \n      68|   stripNewLines = false;\n      69| \n      70|   timeout?: number;\n      71| \n      72|   private embeddingsAPIUrl = \"https://api.together.xyz/v1/embeddings\";\n      73| \n      74|   get lc_secrets(): { [key: string]: string } | undefined {\n      75|     return {\n>>    76|       apiKey: \"TOGETHER_AI_API_KEY\",\n      77|     };\n      78|   }\n      79| \n      80|   constructor(fields?: Partial<TogetherAIEmbeddingsParams>) {\n      81|     super(fields ?? {});\n      82| \n      83|     const apiKey =\n      84|       fields?.apiKey ?? getEnvironmentVariable(\"TOGETHER_AI_API_KEY\");\n      85|     if (!apiKey) {\n      86|       throw new Error(\"TOGETHER_AI_API_KEY not found.\");\n      87|     }\n      88| "
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "libs/providers/langchain-together-ai/src/llms.ts",
+  "line": 159,
+  "snippet": "apiK*********************KEY\",",
+  "owasp": "LLM02",
+  "code_context": "     147|   stop?: string[];\n     148| \n     149|   private apiKey: string;\n     150| \n     151|   private inferenceAPIUrl = \"https://api.together.xyz/inference\";\n     152| \n     153|   static lc_name() {\n     154|     return \"TogetherAI\";\n     155|   }\n     156| \n     157|   get lc_secrets(): { [key: string]: string } | undefined {\n     158|     return {\n>>   159|       apiKey: \"TOGETHER_AI_API_KEY\",\n     160|     };\n     161|   }\n     162| \n     163|   get lc_aliases(): { [key: string]: string } | undefined {\n     164|     return {\n     165|       apiKey: \"together_ai_api_key\",\n     166|     };\n     167|   }\n     168| \n     169|   private isChatModel(modelName: string): boolean {\n     170|     const chatModelPatterns = [/instruct/i, /chat/i, /vision/i, /turbo/i];\n     171|     return chatModelPatterns.some((pattern) => pattern.test(modelName));"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "libs/providers/langchain-together-ai/src/llms.ts",
+  "line": 165,
+  "snippet": "apiK*********************key\",",
+  "owasp": "LLM02",
+  "code_context": "     153|   static lc_name() {\n     154|     return \"TogetherAI\";\n     155|   }\n     156| \n     157|   get lc_secrets(): { [key: string]: string } | undefined {\n     158|     return {\n     159|       apiKey: \"TOGETHER_AI_API_KEY\",\n     160|     };\n     161|   }\n     162| \n     163|   get lc_aliases(): { [key: string]: string } | undefined {\n     164|     return {\n>>   165|       apiKey: \"together_ai_api_key\",\n     166|     };\n     167|   }\n     168| \n     169|   private isChatModel(modelName: string): boolean {\n     170|     const chatModelPatterns = [/instruct/i, /chat/i, /vision/i, /turbo/i];\n     171|     return chatModelPatterns.some((pattern) => pattern.test(modelName));\n     172|   }\n     173| \n     174|   constructor(inputs: TogetherAIInputs) {\n     175|     super(inputs);\n     176|     this._addVersion(\"@langchain/together-ai\", __PKG_VERSION__);\n     177|     const apiKey ="
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "libs/providers/langchain-together-ai/src/chat_models.ts",
+  "line": 84,
+  "snippet": "togetherAIApiK*********************KEY\",",
+  "owasp": "LLM02",
+  "code_context": "      72|   }\n      73| \n      74|   lc_serializable = true;\n      75| \n      76|   lc_namespace = [\"langchain\", \"chat_models\", \"together_ai\"];\n      77| \n      78|   _llmType() {\n      79|     return \"togetherAI\";\n      80|   }\n      81| \n      82|   get lc_secrets(): { [key: string]: string } | undefined {\n      83|     return {\n>>    84|       togetherAIApiKey: \"TOGETHER_AI_API_KEY\",\n      85|       apiKey: \"TOGETHER_AI_API_KEY\",\n      86|     };\n      87|   }\n      88| \n      89|   get lc_aliases(): { [key: string]: string } | undefined {\n      90|     return {\n      91|       togetherAIApiKey: \"together_ai_api_key\",\n      92|       apiKey: \"together_ai_api_key\",\n      93|     };\n      94|   }\n      95| \n      96|   constructor(fields?: Partial<ChatTogetherAIInput>) {"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "libs/providers/langchain-together-ai/src/chat_models.ts",
+  "line": 85,
+  "snippet": "apiK*********************KEY\",",
+  "owasp": "LLM02",
+  "code_context": "      73| \n      74|   lc_serializable = true;\n      75| \n      76|   lc_namespace = [\"langchain\", \"chat_models\", \"together_ai\"];\n      77| \n      78|   _llmType() {\n      79|     return \"togetherAI\";\n      80|   }\n      81| \n      82|   get lc_secrets(): { [key: string]: string } | undefined {\n      83|     return {\n      84|       togetherAIApiKey: \"TOGETHER_AI_API_KEY\",\n>>    85|       apiKey: \"TOGETHER_AI_API_KEY\",\n      86|     };\n      87|   }\n      88| \n      89|   get lc_aliases(): { [key: string]: string } | undefined {\n      90|     return {\n      91|       togetherAIApiKey: \"together_ai_api_key\",\n      92|       apiKey: \"together_ai_api_key\",\n      93|     };\n      94|   }\n      95| \n      96|   constructor(fields?: Partial<ChatTogetherAIInput>) {\n      97|     const togetherAIApiKey ="
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "libs/providers/langchain-together-ai/src/chat_models.ts",
+  "line": 91,
+  "snippet": "togetherAIApiK*********************key\",",
+  "owasp": "LLM02",
+  "code_context": "      79|     return \"togetherAI\";\n      80|   }\n      81| \n      82|   get lc_secrets(): { [key: string]: string } | undefined {\n      83|     return {\n      84|       togetherAIApiKey: \"TOGETHER_AI_API_KEY\",\n      85|       apiKey: \"TOGETHER_AI_API_KEY\",\n      86|     };\n      87|   }\n      88| \n      89|   get lc_aliases(): { [key: string]: string } | undefined {\n      90|     return {\n>>    91|       togetherAIApiKey: \"together_ai_api_key\",\n      92|       apiKey: \"together_ai_api_key\",\n      93|     };\n      94|   }\n      95| \n      96|   constructor(fields?: Partial<ChatTogetherAIInput>) {\n      97|     const togetherAIApiKey =\n      98|       fields?.apiKey ||\n      99|       fields?.togetherAIApiKey ||\n     100|       getEnvironmentVariable(\"TOGETHER_AI_API_KEY\");\n     101| \n     102|     if (!togetherAIApiKey) {\n     103|       throw new Error("
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "libs/providers/langchain-perplexity/src/chat_models.ts",
+  "line": 688,
+  "snippet": "const response = await (this.client as any).responses.create(",
+  "owasp": "LLM05",
+  "code_context": "     676|       const generations = Object.entries(finalChunks)\n     677|         .sort(([aKey], [bKey]) => parseInt(aKey, 10) - parseInt(bKey, 10))\n     678|         .map(([_, value]) => value);\n     679|       return { generations };\n     680|     }\n     681| \n     682|     if (route) {\n     683|       const responsesPayload = this._toResponsesPayload({\n     684|         ...basePayload,\n     685|         stream: false,\n     686|       });\n     687|       // oxlint-disable-next-line @typescript-eslint/no-explicit-any\n>>   688|       const response = await (this.client as any).responses.create(\n     689|         responsesPayload\n     690|       );\n     691|       return convertResponsesToChatResult(response);\n     692|     }\n     693| \n     694|     const response = await this.client.chat.completions.create({\n     695|       messages: messagesList,\n     696|       ...this.invocationParams(options),\n     697|       stream: false,\n     698|     });\n     699| \n     700|     const { message } = response.choices[0];"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "libs/providers/langchain-perplexity/src/chat_models.ts",
+  "line": 694,
+  "snippet": "const response = await this.client.chat.completions.create({",
+  "owasp": "LLM05",
+  "code_context": "     682|     if (route) {\n     683|       const responsesPayload = this._toResponsesPayload({\n     684|         ...basePayload,\n     685|         stream: false,\n     686|       });\n     687|       // oxlint-disable-next-line @typescript-eslint/no-explicit-any\n     688|       const response = await (this.client as any).responses.create(\n     689|         responsesPayload\n     690|       );\n     691|       return convertResponsesToChatResult(response);\n     692|     }\n     693| \n>>   694|     const response = await this.client.chat.completions.create({\n     695|       messages: messagesList,\n     696|       ...this.invocationParams(options),\n     697|       stream: false,\n     698|     });\n     699| \n     700|     const { message } = response.choices[0];\n     701| \n     702|     const generations: ChatGeneration[] = [];\n     703| \n     704|     generations.push({\n     705|       text: message.content ?? \"\",\n     706|       message: new AIMessage({"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "libs/providers/langchain-perplexity/src/chat_models.ts",
+  "line": 748,
+  "snippet": "const stream = await this.client.chat.completions.create({",
+  "owasp": "LLM05",
+  "code_context": "     736|     );\n     737|     const basePayload: Record<string, unknown> = {\n     738|       messages: messagesList,\n     739|       ...this.invocationParams(options),\n     740|       ...this._responsesOptions(options),\n     741|     };\n     742| \n     743|     if (this._useResponsesApi(basePayload)) {\n     744|       yield* super._streamChatModelEvents(messages, options, runManager);\n     745|       return;\n     746|     }\n     747| \n>>   748|     const stream = await this.client.chat.completions.create({\n     749|       messages: messagesList,\n     750|       ...this.invocationParams(options),\n     751|       stream: true,\n     752|     });\n     753|     const abortableStream = async function* (\n     754|       source: AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>,\n     755|       signal?: AbortSignal\n     756|     ) {\n     757|       for await (const chunk of source) {\n     758|         if (signal?.aborted) {\n     759|           return;\n     760|         }"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "libs/langchain-classic/src/experimental/autogpt/prompt.ts",
+  "line": 71,
+  "snippet": "let fullPrompt = `You are ${this.aiName}, ${this.aiRole}\\n${promptStart}\\n\\nGOALS:\\n\\n`;",
+  "owasp": "LLM01",
+  "code_context": "      59|   /**\n      60|    * Constructs the full prompt based on the provided goals.\n      61|    * @param goals An array of goals.\n      62|    * @returns The full prompt as a string.\n      63|    */\n      64|   constructFullPrompt(goals: string[]): string {\n      65|     const promptStart = `Your decisions must always be made independently\n      66|             without seeking user assistance. Play to your strengths\n      67|             as an LLM and pursue simple strategies with no legal complications.\n      68|             If you have completed all your tasks,\n      69|             make sure to use the \"finish\" command.`;\n      70| \n>>    71|     let fullPrompt = `You are ${this.aiName}, ${this.aiRole}\\n${promptStart}\\n\\nGOALS:\\n\\n`;\n      72|     goals.forEach((goal, index) => {\n      73|       fullPrompt += `${index + 1}. ${goal}\\n`;\n      74|     });\n      75| \n      76|     fullPrompt += `\\n\\n${getPrompt(this.tools)}`;\n      77|     return fullPrompt;\n      78|   }\n      79| \n      80|   /**\n      81|    * Formats the messages based on the provided parameters.\n      82|    * @param goals An array of goals.\n      83|    * @param memory A VectorStoreRetriever instance."
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "libs/langchain-classic/src/retrievers/hyde.ts",
+  "line": 90,
+  "snippet": "`Prompt template must accept a single input variable 'question'. Invalid input variables for prompt template: ${inputVariables}`",
+  "owasp": "LLM01",
+  "code_context": "      78| \n      79|   constructor(fields: HydeRetrieverOptions<V>) {\n      80|     super(fields);\n      81|     this.llm = fields.llm;\n      82|     this.promptTemplate =\n      83|       typeof fields.promptTemplate === \"string\"\n      84|         ? getPromptTemplateFromKey(fields.promptTemplate)\n      85|         : fields.promptTemplate;\n      86|     if (this.promptTemplate) {\n      87|       const { inputVariables } = this.promptTemplate;\n      88|       if (inputVariables.length !== 1 && inputVariables[0] !== \"question\") {\n      89|         throw new Error(\n>>    90|           `Prompt template must accept a single input variable 'question'. Invalid input variables for prompt template: ${inputVariables}`\n      91|         );\n      92|       }\n      93|     }\n      94|   }\n      95| \n      96|   async _getRelevantDocuments(\n      97|     query: string,\n      98|     runManager?: CallbackManagerForRetrieverRun\n      99|   ): Promise<Document[]> {\n     100|     let value: BasePromptValue = new StringPromptValue(query);\n     101| \n     102|     // Use a custom template if provided"
+ },
+ {
+  "repo": "langchain-ai/langchainjs",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "libs/langchain-classic/src/chains/sql_db/sql_db_chain.ts",
+  "line": 303,
+  "snippet": "`${promptToUse.inputVariables}. Full prompt:\\n\\n${promptToUse}`",
+  "owasp": "LLM01",
+  "code_context": "     291|   } else {\n     292|     promptToUse = DEFAULT_SQL_DATABASE_PROMPT;\n     293|   }\n     294| \n     295|   if (\n     296|     difference(\n     297|       new Set([\"input\", \"top_k\", \"table_info\"]),\n     298|       new Set(promptToUse.inputVariables)\n     299|     ).size > 0\n     300|   ) {\n     301|     throw new Error(\n     302|       `Prompt must have input variables: 'input', 'top_k', 'table_info'. Received prompt with input variables: ` +\n>>   303|         `${promptToUse.inputVariables}. Full prompt:\\n\\n${promptToUse}`\n     304|     );\n     305|   }\n     306|   if (promptToUse.inputVariables.includes(\"dialect\")) {\n     307|     promptToUse = await promptToUse.partial({ dialect });\n     308|   }\n     309| \n     310|   promptToUse = await promptToUse.partial({ top_k: k.toString() });\n     311| \n     312|   const inputs = {\n     313|     input: (x: Record<string, unknown>) => {\n     314|       if (\"question\" in x) {\n     315|         return `${(x as SqlInput).question}\\nSQLQuery: `;"
+ },
+ {
+  "repo": "chainlit/chainlit",
+  "rule_id": "CANARY-PI-002",
+  "severity": "Medium",
+  "file": "cypress/e2e/chat_prefill/spec.cy.ts",
+  "line": 20,
+  "snippet": "cy.visit(`/?prompt=${prompt}`);",
+  "owasp": "LLM01",
+  "code_context": "       8|   });\n       9| \n      10|   it('should not prefill the chat when prompt is empty', () => {\n      11|     cy.visit('/');\n      12| \n      13|     cy.get('#chat-input', { timeout: 10000 })\n      14|       .should('be.visible')\n      15|       .and('have.value', '');\n      16|   });\n      17| \n      18|   it('should correctly prefill with special characters', () => {\n      19|     const prompt = encodeURIComponent(\"Hi there! How's it going?\");\n>>    20|     cy.visit(`/?prompt=${prompt}`);\n      21| \n      22|     cy.get('#chat-input', { timeout: 10000 })\n      23|       .should('be.visible')\n      24|       .and('have.value', \"Hi there! How's it going?\");\n      25|   });\n      26| \n      27|   it('should focus the chat input when prefilled', () => {\n      28|     cy.visit('/?prompt=FocusTest');\n      29| \n      30|     cy.get('#chat-input', { timeout: 10000 })\n      31|       .should('be.visible')\n      32|       .and('have.focus');"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "dotnet/samples/Demos/QualityCheck/python-server/app/main.py",
+  "line": 40,
+  "snippet": "return model.predict(data, accelerator=\"cpu\")",
+  "owasp": "LLM05",
+  "code_context": "      28|     return meteor.compute(predictions=request.summaries, references=request.sources)\n      29| \n      30| @app.post(\"/bleu-score/\")\n      31| def bleu_score(request: SummarizationEvaluationRequest):\n      32|     bleu = load(\"bleu\")\n      33|     return bleu.compute(predictions=request.summaries, references=request.sources)\n      34| \n      35| @app.post(\"/comet-score/\")\n      36| def comet_score(request: TranslationEvaluationRequest):\n      37|     model_path = download_model(\"Unbabel/wmt22-cometkiwi-da\")\n      38|     model = load_from_checkpoint(model_path)\n      39|     data = [{\"src\": src, \"mt\": mt} for src, mt in zip(request.sources, request.translations)]\n>>    40|     return model.predict(data, accelerator=\"cpu\")"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/semantic_kernel/agents/channels/bedrock_agent_channel.py",
+  "line": 69,
+  "snippet": "async for response in agent.invoke(",
+  "owasp": "LLM05",
+  "code_context": "      57| \n      58|         if not isinstance(agent, BedrockAgent):\n      59|             raise AgentChatException(f\"Agent is not of the expected type {type(BedrockAgent)}.\")\n      60|         if not self.messages:\n      61|             # This is not supposed to happen, as the channel won't get invoked\n      62|             # before it has received messages. This is just extra safety.\n      63|             raise AgentChatException(\"No chat history available.\")\n      64| \n      65|         # Preprocess chat history\n      66|         await self._ensure_history_alternates()\n      67|         await self._ensure_last_message_is_user()\n      68| \n>>    69|         async for response in agent.invoke(\n      70|             messages=self.messages[-1].content,\n      71|             thread=self.thread,\n      72|             sessionState=await self._parse_chat_history_to_session_state(),\n      73|         ):\n      74|             # All messages from Bedrock agents are user facing, i.e., function calls are not returned as messages\n      75|             self.messages.append(response.message)\n      76|             yield True, response.message\n      77| \n      78|     @override\n      79|     async def invoke_stream(\n      80|         self,\n      81|         agent: \"Agent\","
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/semantic_kernel/agents/channels/chat_history_channel.py",
+  "line": 65,
+  "snippet": "async for response in agent.invoke(",
+  "owasp": "LLM05",
+  "code_context": "      53| \n      54|         Args:\n      55|             agent: The agent to interact with.\n      56|             kwargs: The keyword arguments.\n      57| \n      58|         Returns:\n      59|             An async iterable of ChatMessageContent.\n      60|         \"\"\"\n      61|         message_count = len(self.messages)\n      62|         mutated_history = set()\n      63|         message_queue: Deque[ChatMessageContent] = deque()\n      64| \n>>    65|         async for response in agent.invoke(\n      66|             messages=self.messages[-1],\n      67|             thread=self.thread,\n      68|         ):\n      69|             # Capture all messages that have been included in the mutated history.\n      70|             for message_index in range(message_count, len(self.messages)):\n      71|                 mutated_message = self.messages[message_index]\n      72|                 mutated_history.add(mutated_message)\n      73|                 message_queue.append(mutated_message)\n      74| \n      75|             # Update the message count pointer to reflect the current history.\n      76|             message_count = len(self.messages)\n      77| "
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/semantic_kernel/agents/open_ai/assistant_thread_actions.py",
+  "line": 125,
+  "snippet": "return await client.beta.threads.messages.create(",
+  "owasp": "LLM05",
+  "code_context": "     113|             return None\n     114| \n     115|         # Set the default allowed message roles if not provided\n     116|         if allowed_message_roles is None:\n     117|             allowed_message_roles = [AuthorRole.USER, AuthorRole.ASSISTANT]\n     118|         if message.role.value not in allowed_message_roles and message.role != AuthorRole.TOOL:\n     119|             raise AgentExecutionException(\n     120|                 f\"Invalid message role `{message.role.value}`. Allowed roles are {allowed_message_roles}.\"\n     121|             )\n     122| \n     123|         message_contents: list[dict[str, Any]] = get_message_contents(message=message)\n     124| \n>>   125|         return await client.beta.threads.messages.create(\n     126|             thread_id=thread_id,\n     127|             role=\"assistant\" if message.role == AuthorRole.TOOL else message.role.value,  # type: ignore\n     128|             content=message_contents,  # type: ignore\n     129|             **kwargs,\n     130|         )\n     131| \n     132|     # endregion\n     133| \n     134|     # region Invocation Methods\n     135| \n     136|     @classmethod\n     137|     async def invoke("
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/semantic_kernel/agents/open_ai/assistant_content_generation.py",
+  "line": 79,
+  "snippet": "return await client.beta.threads.messages.create(",
+  "owasp": "LLM05",
+  "code_context": "      67|         Message: The message.\n      68|     \"\"\"\n      69|     # Set the default allowed message roles if not provided\n      70|     if allowed_message_roles is None:\n      71|         allowed_message_roles = [AuthorRole.USER, AuthorRole.ASSISTANT]\n      72|     if message.role.value not in allowed_message_roles and message.role != AuthorRole.TOOL:\n      73|         raise AgentExecutionException(\n      74|             f\"Invalid message role `{message.role.value}`. Allowed roles are {allowed_message_roles}.\"\n      75|         )\n      76| \n      77|     message_contents: list[dict[str, Any]] = get_message_contents(message=message)\n      78| \n>>    79|     return await client.beta.threads.messages.create(\n      80|         thread_id=thread_id,\n      81|         role=\"assistant\" if message.role == AuthorRole.TOOL else message.role.value,  # type: ignore\n      82|         content=message_contents,  # type: ignore\n      83|     )\n      84| \n      85| \n      86| @experimental\n      87| def get_message_contents(message: \"ChatMessageContent\") -> list[dict[str, Any]]:\n      88|     \"\"\"Get the message contents.\n      89| \n      90|     Args:\n      91|         message: The message."
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/semantic_kernel/agents/open_ai/responses_agent_thread_actions.py",
+  "line": 609,
+  "snippet": "response: Response = await agent.client.responses.create(",
+  "owasp": "LLM05",
+  "code_context": "     597|     async def _get_response(\n     598|         cls: type[_T],\n     599|         agent: \"OpenAIResponsesAgent\",\n     600|         chat_history: \"ChatHistory\",\n     601|         merged_instructions: str | None = None,\n     602|         previous_response_id: str | None = None,\n     603|         store_output_enabled: bool | None = None,\n     604|         tools: Any | None = None,\n     605|         response_options: dict | None = None,\n     606|         stream: bool = False,\n     607|     ) -> Response | AsyncStream[ResponseStreamEvent]:\n     608|         try:\n>>   609|             response: Response = await agent.client.responses.create(\n     610|                 input=cls._prepare_chat_history_for_request(\n     611|                     chat_history, store_output_enabled if store_output_enabled is not None else agent.store_enabled\n     612|                 ),\n     613|                 instructions=merged_instructions or agent.instructions,\n     614|                 previous_response_id=previous_response_id,\n     615|                 store=store_output_enabled,\n     616|                 tools=tools,  # type: ignore\n     617|                 stream=stream,\n     618|                 **response_options,\n     619|             )\n     620|         except BadRequestError as ex:\n     621|             if ex.code == \"content_filter\":"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/semantic_kernel/agents/azure_ai/agent_thread_actions.py",
+  "line": 864,
+  "snippet": "return await client.agents.messages.create(",
+  "owasp": "LLM05",
+  "code_context": "     852|         Returns:\n     853|             The created message.\n     854|         \"\"\"\n     855|         if isinstance(message, str):\n     856|             message = ChatMessageContent(role=AuthorRole.USER, content=message)\n     857| \n     858|         if any(isinstance(item, FunctionCallContent) for item in message.items):\n     859|             return None\n     860| \n     861|         if not message.content.strip():\n     862|             return None\n     863| \n>>   864|         return await client.agents.messages.create(\n     865|             thread_id=thread_id,\n     866|             role=MessageRole.USER if message.role == AuthorRole.USER else MessageRole.AGENT,\n     867|             content=message.content,\n     868|             attachments=AzureAIAgentUtils.get_attachments(message),\n     869|             metadata=AzureAIAgentUtils.get_metadata(message),\n     870|             **kwargs,\n     871|         )\n     872| \n     873|     @classmethod\n     874|     async def get_messages(\n     875|         cls: type[_T],\n     876|         client: \"AIProjectClient\","
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "python/semantic_kernel/connectors/ai/google/google_ai/services/google_ai_text_completion.py",
+  "line": 128,
+  "snippet": "return await client.aio.models.generate_content(",
+  "owasp": "LLM05",
+  "code_context": "     116|         self,\n     117|         prompt: str,\n     118|         settings: \"PromptExecutionSettings\",\n     119|     ) -> list[TextContent]:\n     120|         if not isinstance(settings, GoogleAITextPromptExecutionSettings):\n     121|             settings = self.get_prompt_execution_settings_from_settings(settings)\n     122|         assert isinstance(settings, GoogleAITextPromptExecutionSettings)  # nosec\n     123| \n     124|         if not self.service_settings.gemini_model_id:\n     125|             raise ServiceInitializationError(\"The Google AI Gemini model ID is required.\")\n     126| \n     127|         async def _generate_content(client: Client) -> GenerateContentResponse:\n>>   128|             return await client.aio.models.generate_content(\n     129|                 model=self.service_settings.gemini_model_id,  # type: ignore[arg-type]\n     130|                 contents=prompt,\n     131|                 config=GenerateContentConfigDict(**settings.prepare_settings_dict()),  # type: ignore[typeddict-item]\n     132|             )\n     133| \n     134|         if self.client:\n     135|             response: GenerateContentResponse = await _generate_content(self.client)\n     136|         elif self.service_settings.use_vertexai:\n     137|             with Client(\n     138|                 vertexai=True,\n     139|                 project=self.service_settings.cloud_project_id,\n     140|                 location=self.service_settings.cloud_region,"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/semantic_kernel/connectors/openapi_plugin/openapi_runner.py",
+  "line": 278,
+  "snippet": "logger.debug(\"Could not connect to validated address %s, trying the next one.\", address)",
+  "owasp": "LLM02",
+  "code_context": "     266|             async with httpx.AsyncClient(timeout=timeout, mounts=_direct_mounts(pinned_addresses)) as client:\n     267|                 if not pinned_addresses:\n     268|                     return await make_request(client)\n     269|                 # Every vetted address is an acceptable target, so keep the resolver's\n     270|                 # fallback behaviour by trying the next one when a connection cannot be\n     271|                 # established. Only connection failures are retried, so no request is\n     272|                 # ever delivered more than once.\n     273|                 *fallback_addresses, final_address = pinned_addresses\n     274|                 for address in fallback_addresses:\n     275|                     try:\n     276|                         return await make_request(client, pin_to=address)\n     277|                     except (httpx.ConnectError, httpx.ConnectTimeout):\n>>   278|                         logger.debug(\"Could not connect to validated address %s, trying the next one.\", address)\n     279|                 return await make_request(client, pin_to=final_address)\n     280| \n     281|         return await fetch()"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "python/semantic_kernel/connectors/memory_stores/azure_cognitive_search/utils.py",
+  "line": 39,
+  "snippet": "ENV_VAR_API_************************************KEY\"",
+  "owasp": "LLM02",
+  "code_context": "      27|     azure_credential: AzureKeyCredential | None = None,\n      28|     token_credential: TokenCredential | None = None,\n      29| ):\n      30|     \"\"\"Return a client for Azure Cognitive Search.\n      31| \n      32|     Args:\n      33|         search_endpoint (str): Optional endpoint (default: {None}).\n      34|         admin_key (str): Optional API key (default: {None}).\n      35|         azure_credential (AzureKeyCredential): Optional Azure credentials (default: {None}).\n      36|         token_credential (TokenCredential): Optional Token credential (default: {None}).\n      37|     \"\"\"\n      38|     ENV_VAR_ENDPOINT = \"AZURE_COGNITIVE_SEARCH_ENDPOINT\"\n>>    39|     ENV_VAR_API_KEY = \"AZURE_COGNITIVE_SEARCH_ADMIN_KEY\"\n      40| \n      41|     # Load environment variables\n      42|     load_dotenv()\n      43| \n      44|     # Service endpoint\n      45|     if search_endpoint:\n      46|         service_endpoint = search_endpoint\n      47|     elif os.getenv(ENV_VAR_ENDPOINT):\n      48|         service_endpoint = os.getenv(ENV_VAR_ENDPOINT)\n      49|     else:\n      50|         raise ServiceInitializationError(\"Error: missing Azure Cognitive Search client endpoint.\")\n      51| "
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/samples/demos/guided_conversations/guided_conversation/utils/resources.py",
+  "line": 203,
+  "snippet": "resource_instructions = f\"So far, {formatted_elapsed_resource} {'have' if is_plural_elapsed else 'has'} elapsed since the conversation began. \"",
+  "owasp": "LLM01",
+  "code_context": "     191|         \"\"\"\n     192|         if self.resource_constraint is None:\n     193|             return \"\"\n     194| \n     195|         formatted_elapsed_resource = format_resource(self.elapsed_units, ResourceConstraintUnit.TURNS)\n     196|         formatted_remaining_resource = format_resource(self.remaining_units, ResourceConstraintUnit.TURNS)\n     197| \n     198|         # if the resource quantity is anything other than 1, the resource unit should be plural (e.g. \"minutes\" instead of \"minute\")\n     199|         is_plural_elapsed = self.elapsed_units != 1\n     200|         is_plural_remaining = self.remaining_units != 1\n     201| \n     202|         if self.elapsed_units > 0:\n>>   203|             resource_instructions = f\"So far, {formatted_elapsed_resource} {'have' if is_plural_elapsed else 'has'} elapsed since the conversation began. \"\n     204|         else:\n     205|             resource_instructions = \"\"\n     206| \n     207|         if self.resource_constraint.mode == ResourceConstraintMode.EXACT:\n     208|             exact_mode_instructions = f\"\"\"There {\"are\" if is_plural_remaining else \"is\"} {formatted_remaining_resource} remaining (including this one) - the conversation will automatically terminate when 0 turns are left. \\\n     209| You should continue the conversation until it is automatically terminated. This means you should NOT preemptively end the conversation, \\\n     210| either explicitly (by selecting the \"End conversation\" action) or implicitly (e.g. by telling the user that you have all required information and they should wait for the next step). \\\n     211| Your goal is not to maximize efficiency (i.e. complete the artifact as quickly as possible then end the conversation), but rather to make the best use of ALL remaining turns available to you\"\"\"\n     212| \n     213|             if is_plural_remaining:\n     214|                 resource_instructions += f\"\"\"{exact_mode_instructions}. This will require you to plan your actions carefully using the agenda: you want to avoid the situation where you have to pack too many topics into the final turns because you didn't account for them earlier, \\\n     215| or where you've rushed through the conversation and all fields are completed but there are still many turns left.\"\"\""
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/samples/demos/guided_conversations/guided_conversation/utils/resources.py",
+  "line": 208,
+  "snippet": "exact_mode_instructions = f\"\"\"There {\"are\" if is_plural_remaining else \"is\"} {formatted_remaining_resource} remaining (including this one) - the conversation will automatically terminate when 0 turns are left. \\",
+  "owasp": "LLM01",
+  "code_context": "     196|         formatted_remaining_resource = format_resource(self.remaining_units, ResourceConstraintUnit.TURNS)\n     197| \n     198|         # if the resource quantity is anything other than 1, the resource unit should be plural (e.g. \"minutes\" instead of \"minute\")\n     199|         is_plural_elapsed = self.elapsed_units != 1\n     200|         is_plural_remaining = self.remaining_units != 1\n     201| \n     202|         if self.elapsed_units > 0:\n     203|             resource_instructions = f\"So far, {formatted_elapsed_resource} {'have' if is_plural_elapsed else 'has'} elapsed since the conversation began. \"\n     204|         else:\n     205|             resource_instructions = \"\"\n     206| \n     207|         if self.resource_constraint.mode == ResourceConstraintMode.EXACT:\n>>   208|             exact_mode_instructions = f\"\"\"There {\"are\" if is_plural_remaining else \"is\"} {formatted_remaining_resource} remaining (including this one) - the conversation will automatically terminate when 0 turns are left. \\\n     209| You should continue the conversation until it is automatically terminated. This means you should NOT preemptively end the conversation, \\\n     210| either explicitly (by selecting the \"End conversation\" action) or implicitly (e.g. by telling the user that you have all required information and they should wait for the next step). \\\n     211| Your goal is not to maximize efficiency (i.e. complete the artifact as quickly as possible then end the conversation), but rather to make the best use of ALL remaining turns available to you\"\"\"\n     212| \n     213|             if is_plural_remaining:\n     214|                 resource_instructions += f\"\"\"{exact_mode_instructions}. This will require you to plan your actions carefully using the agenda: you want to avoid the situation where you have to pack too many topics into the final turns because you didn't account for them earlier, \\\n     215| or where you've rushed through the conversation and all fields are completed but there are still many turns left.\"\"\"\n     216| \n     217|             # special instruction for the final turn (i.e. 1 remaining) in exact mode\n     218|             else:\n     219|                 resource_instructions += f\"\"\"{exact_mode_instructions}, including this one. Therefore, you should use this turn to ask for any remaining information needed to complete the artifact, \\\n     220|         or, if the artifact is already completed, continue to broaden/deepen the discussion in a way that's directly relevant to the artifact. Do NOT indicate to the user that the conversation is ending.\"\"\""
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/getting_started_with_agents/openai_responses/step7_responses_agent_structured_outputs.py",
+  "line": 55,
+  "snippet": "print(f\"# User: {str(user_input)}\")  # type: ignore",
+  "owasp": "LLM02",
+  "code_context": "      43|         client=client,\n      44|         instructions=\"Answer the user's questions.\",\n      45|         name=\"StructuredOutputsAgent\",\n      46|         text=OpenAIResponsesAgent.configure_response_format(Reasoning),\n      47|     )\n      48| \n      49|     # 3. Create a thread for the agent\n      50|     # If no thread is provided, a new thread will be\n      51|     # created and returned with the initial response\n      52|     thread = None\n      53| \n      54|     for user_input in user_inputs:\n>>    55|         print(f\"# User: {str(user_input)}\")  # type: ignore\n      56|         # 5. Invoke the agent with the current chat history and print the response\n      57|         response = await agent.get_response(messages=user_input, thread=thread)\n      58|         reasoned_result = Reasoning.model_validate_json(response.message.content)\n      59|         print(f\"# {response.name}:\\n\\n{json.dumps(reasoned_result.model_dump(), indent=4, ensure_ascii=False)}\")\n      60|         thread = response.thread\n      61| \n      62|     # 6. Clean up the thread\n      63|     await thread.delete() if thread else None\n      64| \n      65|     \"\"\"\n      66|     # User: how can I solve 8x + 7y = -23, and 4x=12?\n      67|     # StructuredOutputsAgent:"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/getting_started_with_agents/openai_responses/step6_responses_agent_vision.py",
+  "line": 72,
+  "snippet": "print(f\"# User: {str(user_input)}\")  # type: ignore",
+  "owasp": "LLM02",
+  "code_context": "      60|             ],\n      61|         ),\n      62|         ChatMessageContent(\n      63|             role=AuthorRole.USER,\n      64|             items=[\n      65|                 TextContent(text=\"Is there an animal in this image?\"),\n      66|                 ImageContent.from_image_file(file_path),\n      67|             ],\n      68|         ),\n      69|     ]\n      70| \n      71|     for user_input in user_messages:\n>>    72|         print(f\"# User: {str(user_input)}\")  # type: ignore\n      73|         # 5. Invoke the agent with the current chat history and print the response\n      74|         response = await agent.get_response(messages=user_input, thread=thread)\n      75|         print(f\"# Agent: {response.content}\\n\")\n      76|         thread = response.thread\n      77|     \"\"\"\n      78|     You should see output similar to the following:\n      79| \n      80|     # User: Describe this image.\n      81|     # Agent: The image depicts a bustling scene of Times Square in New York City...\n      82| \n      83|     # User: What is the main color in this image?\n      84|     # Agent: The main color in the image is blue."
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/concepts/agents/openai_assistant/openai_assistant_streaming.py",
+  "line": 69,
+  "snippet": "print(f\"# {AuthorRole.USER}: '{user_input}'\")",
+  "owasp": "LLM02",
+  "code_context": "      57|         plugins=[MenuPlugin()],\n      58|     )\n      59| \n      60|     # Create a new thread for use with the assistant\n      61|     # If no thread is provided, a new thread will be\n      62|     # created and returned with the initial response\n      63|     thread: AssistantAgentThread = None\n      64| \n      65|     user_inputs = [\"Hello\", \"What is the special soup?\", \"What is the special drink?\", \"How much is that?\", \"Thank you\"]\n      66| \n      67|     try:\n      68|         for user_input in user_inputs:\n>>    69|             print(f\"# {AuthorRole.USER}: '{user_input}'\")\n      70| \n      71|             first_chunk = True\n      72|             async for response in agent.invoke_stream(messages=user_input, thread=thread):\n      73|                 thread = response.thread\n      74|                 if first_chunk:\n      75|                     print(f\"# {response.role}: \", end=\"\", flush=True)\n      76|                     first_chunk = False\n      77|                 print(response.content, end=\"\", flush=True)\n      78|             print()\n      79|     finally:\n      80|         await thread.delete() if thread else None\n      81|         await client.beta.assistants.delete(assistant_id=agent.id)"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/concepts/agents/openai_assistant/openai_assistant_message_callback.py",
+  "line": 91,
+  "snippet": "print(f\"# {AuthorRole.USER}: '{user_input}'\")",
+  "owasp": "LLM02",
+  "code_context": "      79|     thread: AssistantAgentThread = None\n      80| \n      81|     user_inputs = [\n      82|         \"Hello\",\n      83|         \"What is the special soup?\",\n      84|         \"What is the special drink?\",\n      85|         \"How much is that?\",\n      86|         \"Thank you\",\n      87|     ]\n      88| \n      89|     try:\n      90|         for user_input in user_inputs:\n>>    91|             print(f\"# {AuthorRole.USER}: '{user_input}'\")\n      92|             async for response in agent.invoke(\n      93|                 messages=user_input,\n      94|                 thread=thread,\n      95|                 on_intermediate_message=handle_intermediate_steps,\n      96|             ):\n      97|                 print(f\"# {response.role}: {response}\")\n      98|                 thread = response.thread\n      99|     finally:\n     100|         await thread.delete() if thread else None\n     101|         await client.beta.assistants.delete(assistant_id=agent.id)\n     102| \n     103|     \"\"\""
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/concepts/agents/openai_assistant/openai_assistant_message_callback_streaming.py",
+  "line": 91,
+  "snippet": "print(f\"# {AuthorRole.USER}: '{user_input}'\")",
+  "owasp": "LLM02",
+  "code_context": "      79|     thread: AssistantAgentThread = None\n      80| \n      81|     user_inputs = [\n      82|         \"Hello\",\n      83|         \"What is the special soup?\",\n      84|         \"What is the special drink?\",\n      85|         \"How much is that?\",\n      86|         \"Thank you\",\n      87|     ]\n      88| \n      89|     try:\n      90|         for user_input in user_inputs:\n>>    91|             print(f\"# {AuthorRole.USER}: '{user_input}'\")\n      92| \n      93|             first_chunk = True\n      94|             async for response in agent.invoke_stream(\n      95|                 messages=user_input,\n      96|                 thread=thread,\n      97|                 on_intermediate_message=handle_streaming_intermediate_steps,\n      98|             ):\n      99|                 thread = response.thread\n     100|                 if first_chunk:\n     101|                     print(f\"# {response.role}: \", end=\"\", flush=True)\n     102|                     first_chunk = False\n     103|                 print(response.content, end=\"\", flush=True)"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/concepts/agents/openai_responses/responses_agent_message_callback.py",
+  "line": 79,
+  "snippet": "print(f\"# {AuthorRole.USER}: '{user_input}'\")",
+  "owasp": "LLM02",
+  "code_context": "      67|         plugins=[MenuPlugin()],\n      68|     )\n      69| \n      70|     # 3. Create a thread for the agent\n      71|     # If no thread is provided, a new thread will be\n      72|     # created and returned with the initial response\n      73|     thread = None\n      74| \n      75|     user_inputs = [\"Hello\", \"What is the special soup?\", \"What is the special drink?\", \"How much is that?\", \"Thank you\"]\n      76| \n      77|     try:\n      78|         for user_input in user_inputs:\n>>    79|             print(f\"# {AuthorRole.USER}: '{user_input}'\")\n      80|             async for response in agent.invoke(\n      81|                 messages=user_input,\n      82|                 thread=thread,\n      83|                 on_intermediate_message=handle_intermediate_steps,\n      84|             ):\n      85|                 thread = response.thread\n      86|                 print(f\"# {response.name}: {response.content}\")\n      87|     finally:\n      88|         await thread.delete() if thread else None\n      89| \n      90|     \"\"\"\n      91|     Sample Output:"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/concepts/agents/openai_responses/responses_agent_message_callback_streaming.py",
+  "line": 79,
+  "snippet": "print(f\"# {AuthorRole.USER}: '{user_input}'\")",
+  "owasp": "LLM02",
+  "code_context": "      67|         plugins=[MenuPlugin()],\n      68|     )\n      69| \n      70|     # 3. Create a thread for the agent\n      71|     # If no thread is provided, a new thread will be\n      72|     # created and returned with the initial response\n      73|     thread = None\n      74| \n      75|     user_inputs = [\"Hello\", \"What is the special soup?\", \"What is the special drink?\", \"How much is that?\", \"Thank you\"]\n      76| \n      77|     try:\n      78|         for user_input in user_inputs:\n>>    79|             print(f\"# {AuthorRole.USER}: '{user_input}'\")\n      80| \n      81|             first_chunk = True\n      82|             async for response in agent.invoke_stream(\n      83|                 messages=user_input,\n      84|                 thread=thread,\n      85|                 on_intermediate_message=handle_streaming_intermediate_steps,\n      86|             ):\n      87|                 thread = response.thread\n      88|                 if first_chunk:\n      89|                     print(f\"# {response.name}: \", end=\"\", flush=True)\n      90|                     first_chunk = False\n      91|                 print(response.content, end=\"\", flush=True)"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/concepts/agents/mixed_chat/mixed_chat_reset.py",
+  "line": 101,
+  "snippet": "print(f\"\\n{AuthorRole.USER}: '{user_input}'\")",
+  "owasp": "LLM02",
+  "code_context": "      89|             \"What is my favorite color?\",\n      90|         ]\n      91| \n      92|         for user_input in user_inputs:\n      93|             # Check for reset indicator\n      94|             if user_input == \"[RESET]\":\n      95|                 print(\"\\nResetting chat...\")\n      96|                 await chat.reset()\n      97|                 continue\n      98| \n      99|             # First agent (assistant_agent) receives the user input\n     100|             await chat.add_chat_message(user_input)\n>>   101|             print(f\"\\n{AuthorRole.USER}: '{user_input}'\")\n     102|             async for message in chat.invoke(agent=assistant_agent):\n     103|                 if message.content is not None:\n     104|                     print(f\"\\n# {message.role} - {message.name or '*'}: '{message.content}'\")\n     105| \n     106|             # Second agent (chat_agent) just responds without new user input\n     107|             async for message in chat.invoke(agent=chat_agent):\n     108|                 if message.content is not None:\n     109|                     print(f\"\\n# {message.role} - {message.name or '*'}: '{message.content}'\")\n     110|     finally:\n     111|         await chat.reset()\n     112|         await assistant_agent.client.beta.assistants.delete(assistant_agent.id)\n     113| "
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/concepts/audio/03-chat_with_audio_input_output.py",
+  "line": 65,
+  "snippet": "print(user_input.text)",
+  "owasp": "LLM02",
+  "code_context": "      53| \n      54| history = ChatHistory()\n      55| history.add_user_message(\"Hi there, who are you?\")\n      56| history.add_assistant_message(\"I am Mosscap, a chat bot. I'm trying to figure out what people need.\")\n      57| \n      58| \n      59| async def chat() -> bool:\n      60|     try:\n      61|         print(\"User:> \", end=\"\", flush=True)\n      62|         with AudioRecorder(output_filepath=AUDIO_FILEPATH) as recorder:\n      63|             recorder.start_recording()\n      64|             user_input = await audio_to_text_service.get_text_content(AudioContent.from_audio_file(AUDIO_FILEPATH))\n>>    65|             print(user_input.text)\n      66|     except KeyboardInterrupt:\n      67|         print(\"\\n\\nExiting chat...\")\n      68|         return False\n      69|     except EOFError:\n      70|         print(\"\\n\\nExiting chat...\")\n      71|         return False\n      72| \n      73|     if \"exit\" in user_input.text.lower():\n      74|         print(\"\\n\\nExiting chat...\")\n      75|         return False\n      76| \n      77|     history.add_user_message(user_input.text)"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PII-001",
+  "severity": "Medium",
+  "file": "python/samples/concepts/audio/01-chat_with_audio_input.py",
+  "line": 57,
+  "snippet": "print(user_input.text)",
+  "owasp": "LLM02",
+  "code_context": "      45| \n      46| history = ChatHistory()\n      47| history.add_user_message(\"Hi there, who are you?\")\n      48| history.add_assistant_message(\"I am Mosscap, a chat bot. I'm trying to figure out what people need.\")\n      49| \n      50| \n      51| async def chat() -> bool:\n      52|     try:\n      53|         print(\"User:> \", end=\"\", flush=True)\n      54|         with AudioRecorder(output_filepath=AUDIO_FILEPATH) as recorder:\n      55|             recorder.start_recording()\n      56|             user_input = await audio_to_text_service.get_text_content(AudioContent.from_audio_file(AUDIO_FILEPATH))\n>>    57|             print(user_input.text)\n      58|     except KeyboardInterrupt:\n      59|         print(\"\\n\\nExiting chat...\")\n      60|         return False\n      61|     except EOFError:\n      62|         print(\"\\n\\nExiting chat...\")\n      63|         return False\n      64| \n      65|     if \"exit\" in user_input.text.lower():\n      66|         print(\"\\n\\nExiting chat...\")\n      67|         return False\n      68| \n      69|     history.add_user_message(user_input.text)"
+ },
+ {
+  "repo": "microsoft/semantic-kernel",
+  "rule_id": "CANARY-PI-001",
+  "severity": "High",
+  "file": "python/samples/concepts/processes/plan_and_execute.py",
+  "line": 97,
+  "snippet": "prompt = (",
+  "owasp": "LLM01",
+  "code_context": "      85| \n      86| \n      87| class PlannerStep(KernelProcessStep[PlannerStepState]):\n      88|     CREATE_PLAN: ClassVar[str] = \"create_plan\"\n      89|     state: PlannerStepState = Field(default_factory=PlannerStepState)\n      90| \n      91|     async def activate(self, state: KernelProcessStepState[PlannerStepState]):\n      92|         self.state = state.state\n      93| \n      94|     @kernel_function(name=CREATE_PLAN)\n      95|     async def create_plan(self, user_request: str, context: KernelProcessStepContext) -> dict:\n      96|         self.state.times_called += 1\n>>    97|         prompt = (\n      98|             f\"The user wants:\\n{user_request}\\n\"\n      99|             \"Propose a short plan with 2 or 3 bullet points for how to solve it. Keep them concise.\"\n     100|             \"Keep citations as part of the plan.\\n\\n\"\n     101|         )\n     102| \n     103|         response = await run_openai_agent(\n     104|             instructions=\"You generate short tasks to solve the user's request. Use any tool if relevant.\",\n     105|             prompt=prompt,\n     106|             agent_name=\"PlanAgent\",\n     107|         )\n     108|         plan_lines = response.strip().split(\"\\n\")\n     109| "
+ },
+ {
+  "repo": "openai/swarm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "examples/customer_service_streaming/src/utils.py",
+  "line": 23,
+  "snippet": "completion = client.chat.completions.create(**request_params)",
+  "owasp": "LLM05",
+  "code_context": "      11|         \"model\": model,\n      12|         \"messages\": messages,\n      13|         \"max_tokens\": max_tokens,\n      14|         \"temperature\": temperature,\n      15|         \"stream\": stream,\n      16|     }\n      17| \n      18|     if tools and isinstance(tools, list):\n      19|         request_params[\"tools\"] = tools  # Tools are already in dictionary format\n      20| \n      21|     # Make the API call with the possibility of streaming\n      22|     if stream:\n>>    23|         completion = client.chat.completions.create(**request_params)\n      24|         # create variables to collect the stream of chunks\n      25|         collected_chunks = []\n      26|         collected_messages = []\n      27|         for chunk in completion:\n      28|             collected_chunks.append(chunk)  # save the event response\n      29|             chunk_message = chunk.choices[0].delta.content  # extract the message\n      30|             collected_messages.append(chunk_message)  # save the message\n      31|             print(chunk_message, end=\"\")  # print the message\n      32|             # yield chunk_message  # Yield each part of the completion as it arrives\n      33|         return collected_messages  # Returns the whole completion\n      34|     else:\n      35|         completion = client.chat.completions.create(**request_params)"
+ },
+ {
+  "repo": "openai/swarm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "examples/customer_service_streaming/src/utils.py",
+  "line": 35,
+  "snippet": "completion = client.chat.completions.create(**request_params)",
+  "owasp": "LLM05",
+  "code_context": "      23|         completion = client.chat.completions.create(**request_params)\n      24|         # create variables to collect the stream of chunks\n      25|         collected_chunks = []\n      26|         collected_messages = []\n      27|         for chunk in completion:\n      28|             collected_chunks.append(chunk)  # save the event response\n      29|             chunk_message = chunk.choices[0].delta.content  # extract the message\n      30|             collected_messages.append(chunk_message)  # save the message\n      31|             print(chunk_message, end=\"\")  # print the message\n      32|             # yield chunk_message  # Yield each part of the completion as it arrives\n      33|         return collected_messages  # Returns the whole completion\n      34|     else:\n>>    35|         completion = client.chat.completions.create(**request_params)\n      36|         return completion.choices[0].message  # Returns the whole completion\n      37| \n      38| \n      39| def is_dict_empty(d):\n      40|     return all(not v for v in d.values())"
+ },
+ {
+  "repo": "openai/swarm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "examples/customer_service_streaming/src/swarm/engines/assistants_engine.py",
+  "line": 141,
+  "snippet": "self.client.beta.threads.messages.create(",
+  "owasp": "LLM05",
+  "code_context": "     129|                 \"content\": TRIAGE_MESSAGE_PROMPT.format(message, [asst.instance for asst in self.assistants]),\n     130|             }\n     131|         )\n     132|         response = get_completion(self.client, triage_message)\n     133|         return response.content\n     134| \n     135| \n     136|     def run_request(self, request, assistant,test_mode):\n     137|         \"\"\"\n     138|         Run the request with the selected assistant and monitor its status.\n     139|         \"\"\"\n     140|         # Add message to thread\n>>   141|         self.client.beta.threads.messages.create(\n     142|             thread_id=self.thread.id,\n     143|             role=\"user\",\n     144|             content=request\n     145|         )\n     146| \n     147|         # Initialize run\n     148|         run = self.client.beta.threads.runs.create(\n     149|             thread_id=self.thread.id,\n     150|             assistant_id=assistant.instance.id\n     151|         )\n     152| \n     153|         # Monitor the run status in a loop"
+ },
+ {
+  "repo": "openai/swarm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "examples/customer_service_streaming/src/evals/eval_function.py",
+  "line": 45,
+  "snippet": "completion_result = self.client.chat.completions.create(",
+  "owasp": "LLM05",
+  "code_context": "      33|        return False\n      34|     try:\n      35|         for n in numbers:\n      36|             if int(ground_truth) == int(n) or float(ground_truth) == float(n):\n      37|                 return True\n      38|     except:\n      39|         print(f\"Error in comparing numbers: {numbers}\")\n      40|     return False\n      41| \n      42|   def name(self):\n      43|     extract_name_prompt = \"You will be provided with a sentence. Your goal is to extract the full names you see in the sentence. Return the names as an array of strings.\"\n      44|     response = self.plan['step'][-1]\n>>    45|     completion_result = self.client.chat.completions.create(\n      46|        model=\"gpt-4-turbo-preview\",\n      47|        max_tokens=100,\n      48|        temperature=0,\n      49|        messages=[\n      50|         {\"role\": \"system\",\n      51|          \"content\": extract_name_prompt\n      52|          },\n      53|          {\"role\": \"user\", \"content\": f\"SENTENCE:\\n{response}\"}]\n      54|     )\n      55|     name_extract = completion_result.choices[0].message.content\n      56|     print(f\"Name extracted: {name_extract}\")\n      57|     try:"
+ },
+ {
+  "repo": "openai/swarm",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "swarm/core.py",
+  "line": 69,
+  "snippet": "return self.client.chat.completions.create(**create_params)",
+  "owasp": "LLM05",
+  "code_context": "      57| \n      58|         create_params = {\n      59|             \"model\": model_override or agent.model,\n      60|             \"messages\": messages,\n      61|             \"tools\": tools or None,\n      62|             \"tool_choice\": agent.tool_choice,\n      63|             \"stream\": stream,\n      64|         }\n      65| \n      66|         if tools:\n      67|             create_params[\"parallel_tool_calls\"] = agent.parallel_tool_calls\n      68| \n>>    69|         return self.client.chat.completions.create(**create_params)\n      70| \n      71|     def handle_function_result(self, result, debug) -> Result:\n      72|         match result:\n      73|             case Result() as result:\n      74|                 return result\n      75| \n      76|             case Agent() as agent:\n      77|                 return Result(\n      78|                     value=json.dumps({\"assistant\": agent.name}),\n      79|                     agent=agent,\n      80|                 )\n      81|             case _:"
+ },
+ {
+  "repo": "reworkd/AgentGPT",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "docker-compose.yml",
+  "line": 50,
+  "snippet": "MYSQL_PASS********************orm\"",
+  "owasp": "LLM02",
+  "code_context": "      38| \n      39|   agentgpt_db:\n      40|     image: mysql:8.0\n      41|     container_name: agentgpt_db\n      42|     restart: always\n      43|     build:\n      44|       context: ./db\n      45|     ports:\n      46|       - \"3308:3307\"\n      47|     environment:\n      48|       MYSQL_DATABASE: \"reworkd_platform\"\n      49|       MYSQL_USER: \"reworkd_platform\"\n>>    50|       MYSQL_PASSWORD: \"reworkd_platform\"\n      51|       MYSQL_ROOT_PASSWORD: \"reworkd_platform\"\n      52|       MYSQL_TCP_PORT: 3307\n      53|     volumes:\n      54|       - agentgpt_db:/var/lib/mysql\n      55|     command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]\n      56| \n      57| volumes:\n      58|   agentgpt_db:"
+ },
+ {
+  "repo": "reworkd/AgentGPT",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "docker-compose.yml",
+  "line": 51,
+  "snippet": "MYSQL_ROOT_PASS********************orm\"",
+  "owasp": "LLM02",
+  "code_context": "      39|   agentgpt_db:\n      40|     image: mysql:8.0\n      41|     container_name: agentgpt_db\n      42|     restart: always\n      43|     build:\n      44|       context: ./db\n      45|     ports:\n      46|       - \"3308:3307\"\n      47|     environment:\n      48|       MYSQL_DATABASE: \"reworkd_platform\"\n      49|       MYSQL_USER: \"reworkd_platform\"\n      50|       MYSQL_PASSWORD: \"reworkd_platform\"\n>>    51|       MYSQL_ROOT_PASSWORD: \"reworkd_platform\"\n      52|       MYSQL_TCP_PORT: 3307\n      53|     volumes:\n      54|       - agentgpt_db:/var/lib/mysql\n      55|     command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]\n      56| \n      57| volumes:\n      58|   agentgpt_db:"
+ },
+ {
+  "repo": "reworkd/AgentGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "platform/reworkd_platform/services/anthropic.py",
+  "line": 35,
+  "snippet": "await self.claude.completions.create(",
+  "owasp": "LLM05",
+  "code_context": "      23|     def __init__(self, api_key: Optional[str], model: str = \"claude-2\"):\n      24|         self.claude = AsyncAnthropic(api_key=api_key)\n      25|         self.model = model\n      26| \n      27|     async def completion(\n      28|         self,\n      29|         prompt: AbstractPrompt,\n      30|         max_tokens_to_sample: int,\n      31|         temperature: int = 0,\n      32|         **kwargs: Any,\n      33|     ) -> str:\n      34|         return (\n>>    35|             await self.claude.completions.create(\n      36|                 model=self.model,\n      37|                 prompt=prompt.to_string(),\n      38|                 max_tokens_to_sample=max_tokens_to_sample,\n      39|                 temperature=temperature,\n      40|                 **kwargs,\n      41|             )\n      42|         ).completion.strip()"
+ },
+ {
+  "repo": "reworkd/AgentGPT",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "cli/src/envGenerator.js",
+  "line": 59,
+  "snippet": "REWORKD_PLATFORM_DATABASE_PASS********************orm\",",
+  "owasp": "LLM02",
+  "code_context": "      47|       REWORKD_PLATFORM_FF_MOCK_MODE_ENABLED: false,\n      48|       REWORKD_PLATFORM_MAX_LOOPS: \"${NEXT_PUBLIC_MAX_LOOPS}\",\n      49|       REWORKD_PLATFORM_OPENAI_API_KEY:\n      50|         envValues.OpenAIApiKey || '\"<change me>\"',\n      51|       REWORKD_PLATFORM_FRONTEND_URL: \"http://localhost:3000\",\n      52|       REWORKD_PLATFORM_RELOAD: true,\n      53|       REWORKD_PLATFORM_OPENAI_API_BASE: \"https://api.openai.com/v1\",\n      54|       REWORKD_PLATFORM_SERP_API_KEY: envValues.serpApiKey || '\"\"',\n      55|       REWORKD_PLATFORM_REPLICATE_API_KEY: envValues.replicateApiKey || '\"\"',\n      56|     },\n      57|     \"Database (Backend)\": {\n      58|       REWORKD_PLATFORM_DATABASE_USER: \"reworkd_platform\",\n>>    59|       REWORKD_PLATFORM_DATABASE_PASSWORD: \"reworkd_platform\",\n      60|       REWORKD_PLATFORM_DATABASE_HOST: \"agentgpt_db\",\n      61|       REWORKD_PLATFORM_DATABASE_PORT: dbPort,\n      62|       REWORKD_PLATFORM_DATABASE_NAME: \"reworkd_platform\",\n      63|       REWORKD_PLATFORM_DATABASE_URL:\n      64|         \"mysql://${REWORKD_PLATFORM_DATABASE_USER}:${REWORKD_PLATFORM_DATABASE_PASSWORD}@${REWORKD_PLATFORM_DATABASE_HOST}:${REWORKD_PLATFORM_DATABASE_PORT}/${REWORKD_PLATFORM_DATABASE_NAME}\",\n      65|     },\n      66|     \"Database (Frontend)\": {\n      67|       DATABASE_USER: \"reworkd_platform\",\n      68|       DATABASE_PASSWORD: \"reworkd_platform\",\n      69|       DATABASE_HOST: \"agentgpt_db\",\n      70|       DATABASE_PORT: dbPort,\n      71|       DATABASE_NAME: \"reworkd_platform\","
+ },
+ {
+  "repo": "reworkd/AgentGPT",
+  "rule_id": "CANARY-SEC-005",
+  "severity": "High",
+  "file": "cli/src/envGenerator.js",
+  "line": 68,
+  "snippet": "DATABASE_PASS********************orm\",",
+  "owasp": "LLM02",
+  "code_context": "      56|     },\n      57|     \"Database (Backend)\": {\n      58|       REWORKD_PLATFORM_DATABASE_USER: \"reworkd_platform\",\n      59|       REWORKD_PLATFORM_DATABASE_PASSWORD: \"reworkd_platform\",\n      60|       REWORKD_PLATFORM_DATABASE_HOST: \"agentgpt_db\",\n      61|       REWORKD_PLATFORM_DATABASE_PORT: dbPort,\n      62|       REWORKD_PLATFORM_DATABASE_NAME: \"reworkd_platform\",\n      63|       REWORKD_PLATFORM_DATABASE_URL:\n      64|         \"mysql://${REWORKD_PLATFORM_DATABASE_USER}:${REWORKD_PLATFORM_DATABASE_PASSWORD}@${REWORKD_PLATFORM_DATABASE_HOST}:${REWORKD_PLATFORM_DATABASE_PORT}/${REWORKD_PLATFORM_DATABASE_NAME}\",\n      65|     },\n      66|     \"Database (Frontend)\": {\n      67|       DATABASE_USER: \"reworkd_platform\",\n>>    68|       DATABASE_PASSWORD: \"reworkd_platform\",\n      69|       DATABASE_HOST: \"agentgpt_db\",\n      70|       DATABASE_PORT: dbPort,\n      71|       DATABASE_NAME: \"reworkd_platform\",\n      72|       DATABASE_URL:\n      73|         \"mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}\",\n      74|     },\n      75|   };\n      76| };\n      77| \n      78| const generateEnvFileContent = (config) => {\n      79|   let configFile = \"\";\n      80| "
+ },
+ {
+  "repo": "reworkd/AgentGPT",
+  "rule_id": "CANARY-GR-001",
+  "severity": "Low",
+  "file": "next/src/server/api/routers/agentRouter.ts",
+  "line": 30,
+  "snippet": "const chatCompletion = await openAI.chat.completions.create({",
+  "owasp": "LLM05",
+  "code_context": "      18|   tasks: z.array(messageSchema),\n      19| });\n      20| export type SaveAgentProps = z.infer<typeof saveAgentParser>;\n      21| \n      22| async function generateAgentName(goal: string) {\n      23|   if (!env.OPENAI_API_KEY) return undefined;\n      24| \n      25|   try {\n      26|     const openAI = new OpenAI({\n      27|       apiKey: env.OPENAI_API_KEY as string,\n      28|     });\n      29| \n>>    30|     const chatCompletion = await openAI.chat.completions.create({\n      31|       messages: [\n      32|         {\n      33|           role: \"user\",\n      34|           content: goal,\n      35|         },\n      36|         {\n      37|           role: \"system\",\n      38|           content: `Summarize this into one or two words followed by \"GPT\" and a single emoji.\n      39|            Examples:\n      40|            - 'I want to buy a house' becomes HouseGPT \ud83c\udfe0\n      41|            - 'Analyze top stock prices and generate a report' becomes AnalyzeStockGPT \ud83d\udcc8\n      42|            `,"
+ }
+]
