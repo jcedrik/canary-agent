@@ -1,0 +1,20 @@
+name: canary-agent security scan
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./                       # this repo's composite action
+        with:
+          path: "."
+          # add MODEL_API_KEY as a repo secret to enable triage:
+          model-key: ${{ secrets.MODEL_API_KEY }}

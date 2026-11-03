@@ -1,0 +1,34 @@
+name: "canary-agent: triaged LLM security scan"
+description: "Scan LLM/agent code with canary, triage findings with Muse Spark, and gate the build on real risk."
+author: "Jean-Cedrik Dorelas"
+branding:
+  icon: "shield"
+  color: "yellow"
+
+inputs:
+  path:
+    description: "File or directory to scan"
+    required: false
+    default: "."
+  model-key:
+    description: "Meta Model API key (MODEL_API_KEY). If unset, findings are reported untriaged."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install
+      shell: bash
+      run: |
+        pip install -q canary-sast
+        pip install -q "${{ github.action_path }}"
+    - name: Scan, triage and summarize
+      shell: bash
+      env:
+        MODEL_API_KEY: ${{ inputs.model-key }}
+      run: |
+        python -m canary_agent.ci "${{ inputs.path }}" --summary-out "$GITHUB_STEP_SUMMARY"

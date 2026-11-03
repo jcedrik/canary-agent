@@ -1,0 +1,25 @@
+name: publish
+
+# Publishes to PyPI on a version tag (v*), using trusted publishing (OIDC) -
+# no API token stored. Set up the project on PyPI first: add a trusted
+# publisher for owner jcedrik, repo canary-agent, workflow publish.yml,
+# environment pypi.
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # trusted publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q build
+      - run: python -m build
+      - uses: pypa/gh-action-pypi-publish@release/v1

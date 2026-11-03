@@ -83,6 +83,29 @@ Three were confirmed against the source:
 | `_capability.py:168` | GR-001 | a parameter default (`mode: Literal[...] = 'auto'`) |
 | `_summarizing_compaction.py:718` | PI-001 | a static dataclass field + docstring |
 
+## Growing the labeled set (provenance)
+
+`labels.csv` is a **first-pass** set: a single reviewer's call, assistant-reviewed,
+every row noted "to confirm." That is enough to iterate on, not to claim a
+benchmark on. The credible path is an expert confirming each candidate, so the
+repo ships the workflow rather than fabricated labels:
+
+```
+# review candidates one at a time, with code context, and record your verdict
+python eval/label.py --out eval/labels_expert.csv
+# pull from the wider wild pool (119 findings across 10 repos) instead
+python eval/label.py --source eval/wild_findings.json --out eval/labels_expert.csv
+# then evaluate against only what you confirmed
+python eval/run_eval.py --labels eval/labels_expert.csv
+```
+
+`label.py` is resumable, shows the first-pass suggestion **without** treating it
+as truth, and marks every row it writes `provenance=expert`. The candidate pool
+(`labels.csv` + `wild_findings.json`) is larger than the 77 scored above; the
+confirmed set grows as the expert works through it. Numbers in this document are
+against the 77-finding first-pass set and are labeled as such — they do not
+silently absorb unconfirmed candidates.
+
 ## Honest limitations
 
 - Labels are a single reviewer's first pass, marked "to confirm"; this eval

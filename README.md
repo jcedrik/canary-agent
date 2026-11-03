@@ -39,6 +39,26 @@ canary findings ──► triage (Muse Spark) ──► fix (Muse Spark) ──�
 3. **Scan-as-you-code.** An MCP server exposes the scanner to Muse Code, so the
    coding agent checks a block *before it saves it*. (`canary_agent/mcp_server.py`)
 
+## Deterministic detectors, not just the model
+
+The triage model is the headline, but the agent does not trust it blindly. On
+top of canary's findings, `canary-agent` runs its own deterministic AST
+detectors and merges everything into one scan (`rescan.scan_all`):
+
+- **Taint** (`taint.py`) follows untrusted data - `input()`, `request.*`,
+  `sys.argv`, an agent tool's own parameters - through assignments and string
+  building to a dangerous sink (`eval`/`exec`, shell, SQL, an LLM prompt), and
+  reports the source->sink line path. It is intra-procedural by design, stated
+  honestly; the agent's cross-file context lookups cover the rest at triage time.
+- **Agentic rules** (`agentic_rules.py`) flag patterns a pattern scanner misses:
+  unbounded agent loops (ASI-08), `eval`/`exec` on dynamic input (ASI-05),
+  untrusted writes into a vector/memory store (ASI-06).
+- **JS/TS** (`jsts_rules.py`) parses with tree-sitter and flags untrusted values
+  interpolated into a prompt template - real parsing, not a regex.
+
+Every detector finding is normalised to canary's shape, so triage, the
+exploitability ranking, and the CI gate treat it exactly like a scanner finding.
+
 ## Scan-as-you-code with Muse Code
 
 Install the MCP extra and register the server with your coding agent:
@@ -141,24 +161,40 @@ a shell), ASI-03 Identity & Privilege Abuse (a leaked key).
 - [x] MCP server for Muse Code (scan-as-you-code)
 - [x] MCP config audit: 7 checks (insecure transport, unpinned packages,
   over-broad filesystem scope, secrets, raw shell, disabled approvals)
-- [x] Agentic detector for unbounded agent loops (ASI-08)
+- [x] Agentic detectors: unbounded loops (ASI-08), eval/exec on dynamic input
+  (ASI-05), untrusted writes to a vector/memory store (ASI-06)
+- [x] Deterministic intra-procedural taint: untrusted source -> sink, with the
+  source->sink line path (`canary_agent/taint.py`)
+- [x] Real JS/TS AST detection with tree-sitter, not regex (`canary_agent/jsts_rules.py`)
+- [x] Behavior preservation: run the project's tests after a fix, keep it only
+  if they still pass (`canary_agent/verify_tests.py`)
+- [x] Live read-only MCP inspection + baseline drift ("rug-pull") detection
+  (`canary_agent/mcp_live.py`)
+- [x] CI/PR gate: a GitHub composite action that scans, triages, and fails the
+  build when a confirmed finding reaches a tool/shell or a secret (`action.yml`)
+- [x] Expert labeling workflow with explicit provenance (`eval/label.py`)
+- [x] Deterministic evidence trail, kept separate from the model's judgment
+  (`canary_agent/evidence.py`)
+- [x] SEC-005 noise filter for fixtures and placeholders (`canary_agent/refine.py`)
 - [x] Muse Image attack-surface visualization
-- [x] Offline mock mode + tests (no key needed)
+- [x] Offline mock mode + tests (no key needed), packaged for PyPI
 
 ```bash
-python demo/audit_mcp.py ~/.config/muse/settings.json   # audit your MCP wiring
+python demo/audit_mcp.py ~/.config/muse/settings.json          # audit static MCP config
+python demo/audit_mcp.py --live http://127.0.0.1:8791/mcp      # inspect a live server + drift
+python -m canary_agent.ci . --summary-out $GITHUB_STEP_SUMMARY # CI gate
 ```
 
 ## Roadmap
 
-- Cross-function / cross-file taint tracking (the agent fetches context today;
-  full dataflow is next)
-- Deeper MCP auditing: live read-only server inspection and baseline drift
-  ("rug-pull") detection
-- The remaining OWASP Agentic categories (memory poisoning, rogue agents)
+- Inter-procedural / cross-file taint (intra-procedural today; the agent fetches
+  cross-file context at triage time to complement it)
+- Rogue-agent (ASI-10) and multi-agent trust detectors
 - More rule families and languages
-- A larger, multi-reviewer evaluation set
-- Validation on real bug-bounty / disclosure targets
+- A larger, multi-reviewer evaluation set (the labeling workflow ships; the
+  expert pass is ongoing)
+- Validation on real bug-bounty / disclosure targets (a track record takes time
+  and responsible disclosure, so it is deliberately out of scope for the demo)
 
 ## License
 

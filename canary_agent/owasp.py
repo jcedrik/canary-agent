@@ -22,6 +22,16 @@ ASI_MAP = {
     "CANARY-SEC-003": ("ASI-03", "Identity & Privilege Abuse"),
     "CANARY-SEC-004": ("ASI-03", "Identity & Privilege Abuse"),
     "CANARY-SEC-005": ("ASI-03", "Identity & Privilege Abuse"),
+    # in-repo agentic detectors
+    "CANARY-ASI5-001": ("ASI-05", "Code Execution"),
+    "CANARY-ASI6-001": ("ASI-06", "Memory & Context Poisoning"),
+    "CANARY-ASI8-001": ("ASI-08", "Resource Overload"),
+    "CANARY-JSTS-001": ("ASI-01", "Agent Goal Hijack"),
+    # deterministic taint sinks
+    "CANARY-TAINT-EXEC": ("ASI-05", "Code Execution"),
+    "CANARY-TAINT-SHELL": ("ASI-02", "Tool Misuse"),
+    "CANARY-TAINT-SQL": ("ASI-02", "Tool Misuse"),
+    "CANARY-TAINT-PROMPT": ("ASI-01", "Agent Goal Hijack"),
 }
 
 

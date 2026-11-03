@@ -34,3 +34,21 @@ def test_scan_path_returns_list():
 
 def test_bad_syntax_does_not_crash():
     assert scan_source("def (:\n", "x.py") == []
+
+
+def test_eval_on_dynamic_input_flagged_asi5():
+    f = scan_source("eval(user_code)\n", "x.py")
+    assert f and f[0]["rule_id"] == "CANARY-ASI5-001"
+
+
+def test_eval_on_literal_not_flagged():
+    assert scan_source("eval('1+1')\n", "x.py") == []
+
+
+def test_vector_store_write_flagged_asi6():
+    f = scan_source("store.add_texts(docs)\n", "x.py")
+    assert f and f[0]["rule_id"] == "CANARY-ASI6-001"
+
+
+def test_literal_list_to_store_not_flagged():
+    assert scan_source('store.add_texts(["a", "b"])\n', "x.py") == []

@@ -19,6 +19,7 @@ from typing import Optional
 from .config import Config
 from .fixers import Fixer
 from .rescan import scan, rule_set
+from .verify_tests import run_tests
 
 
 @dataclass
@@ -32,15 +33,35 @@ class FixResult:
     new_text: Optional[str]
     rounds: int            # how many fix attempts were made
     note: str
+    tests_passed: Optional[bool] = None  # project tests after the fix (if run)
 
 
 def _finding_present(findings, rule_id: str) -> bool:
     return any(f.get("rule_id") == rule_id for f in findings)
 
 
+def _check_behavior(file_path, new_text, project_dir, cmd):
+    """Apply the patch to the real file, run the project's tests, then restore
+    the file. Returns (passed, note)."""
+    with open(file_path, encoding="utf-8") as fh:
+        saved = fh.read()
+    try:
+        with open(file_path, "w", encoding="utf-8") as fh:
+            fh.write(new_text)
+        res = run_tests(project_dir, cmd)
+    finally:
+        with open(file_path, "w", encoding="utf-8") as fh:
+            fh.write(saved)
+    if not res["ran"]:
+        return None, "tests not run (" + res.get("note", "") + ")"
+    return res["passed"], ("project tests pass" if res["passed"]
+                           else "project tests FAIL - fix may break behavior")
+
+
 def fix_and_verify(file_path: str, rule_id: str, line: int,
                    fixer: Fixer, config: Config = None,
-                   max_rounds: int = 3) -> FixResult:
+                   max_rounds: int = 3, project_dir: str = None,
+                   run_tests_cmd: str = None) -> FixResult:
     config = config or Config.from_env()
     with open(file_path, encoding="utf-8") as fh:
         original = fh.read()
@@ -71,10 +92,15 @@ def fix_and_verify(file_path: str, rule_id: str, line: int,
         verified = not _finding_present(after, rule_id)
         regression = bool(after_rules - before_rules)
         if verified and not regression:
+            note = (f"patch verified by re-scan in {round_no} round(s): "
+                    "finding cleared, no new findings")
+            tests_passed = None
+            if project_dir:
+                tests_passed, tnote = _check_behavior(file_path, new_text,
+                                                      project_dir, run_tests_cmd)
+                note += "; " + tnote
             return FixResult(rule_id, file_path, line, True, True, False,
-                             new_text, round_no,
-                             f"patch verified by re-scan in {round_no} round(s): "
-                             "finding cleared, no new findings")
+                             new_text, round_no, note, tests_passed=tests_passed)
 
         if verified and regression:
             feedback = f"the fix introduced a new issue: {sorted(after_rules - before_rules)}"

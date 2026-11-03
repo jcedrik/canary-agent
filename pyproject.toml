@@ -3,26 +3,42 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "canary-agent"
+name = "canary-agent-sast"
 version = "0.1.0"
-description = "AI triage-and-fix agent over the canary LLM security scanner. Built for the Meta Global AI Developer Hackathon."
+description = "AI triage-and-fix agent over the canary LLM security scanner: triages, ranks by exploitability, fixes and verifies, maps to OWASP Agentic Top 10."
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Jean-Cedrik Dorelas" }]
-keywords = ["llm", "security", "ai-agent", "triage", "meta-model-api", "muse-spark"]
+keywords = ["llm", "security", "ai-agent", "triage", "sast", "prompt-injection",
+            "owasp-agentic", "meta-model-api", "muse-spark", "mcp"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
 
 # Real model calls use the OpenAI SDK against the Meta Model API endpoint.
-# Mock mode and the eval harness need none of this (stdlib only).
+# Mock mode, the eval harness and the detectors need none of this (stdlib only).
 dependencies = ["openai>=1.40"]
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
 mcp = ["mcp>=1.0"]
+jsts = ["tree-sitter>=0.21", "tree-sitter-language-pack>=0.2"]
+
+[project.urls]
+Homepage = "https://github.com/jcedrik/canary-agent"
+Issues = "https://github.com/jcedrik/canary-agent/issues"
 
 [project.scripts]
 canary-agent = "canary_agent.cli:main"
 canary-agent-mcp = "canary_agent.mcp_server:main"
+canary-agent-ci = "canary_agent.ci:main"
 
 [tool.setuptools.packages.find]
 include = ["canary_agent*"]
