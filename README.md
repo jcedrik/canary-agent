@@ -35,7 +35,8 @@ canary findings ──► triage (Muse Spark) ──► fix (Muse Spark) ──�
    reason. (`canary_agent/triage.py`)
 2. **Fix and verify.** For a confirmed finding, the model writes a patch,
    canary re-scans, and the patch is kept only if the finding is gone and no
-   new one appears. (`canary_agent/loop.py`, in progress)
+   new one appears. It also runs the project's own tests after a fix and keeps
+   the patch only if they still pass. (`canary_agent/loop.py`, `verify_tests.py`)
 3. **Scan-as-you-code.** An MCP server exposes the scanner to Muse Code, so the
    coding agent checks a block *before it saves it*. (`canary_agent/mcp_server.py`)
 
